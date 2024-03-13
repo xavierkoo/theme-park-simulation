@@ -1,0 +1,118 @@
+globals [
+  
+]
+
+to attraction-create-entrance
+  crt 1 [
+    setxy 0 -28
+    set shape "house"
+    set color brown
+    set size 4
+    set label (word "Entrance")
+    set label-color white
+  ]
+end
+
+to attraction-create-rides
+  let rides ["Thunderbolt" "Carousel" "Aqua" "Skyward" "Flight" "Coaster" "Glide" "Dash" "Voyage" "Tunnel" "Falls" "Safari"]
+  let positions [[-20 -3] [-20 20] [20 -3] [20 20] [-20 25] [15 -3]
+  [0 20] [0 25] [-25 10] [20 10] [25 10] [20 -8]
+  ] ; Adjust positions as needed
+
+  (foreach rides positions [
+    [r p] ->
+    let x item 0 p
+    let y item 1 p
+
+    ; Create a ride turtle at position (x, y)
+    crt 1 [
+      setxy x y
+      set size 3
+      set shape "square"
+      set color green
+      set label (word "\n" r)
+      set label-color white
+    ]
+  ])
+end
+
+
+; Procedure to create activities
+to attraction-create-activities
+  let activities ["Laser" "Enchanted" "Hunt" "Wizard" "Observatory" "Maze" "Robotics" "Carnival"]
+  let positions [[-20 -8] [25 20] [-25 20] [25 -3]
+  [-20 10] [20 25] [-25 -3] [0 15]
+  ] ; Adjust positions as needed
+
+  (foreach activities positions [
+    [a p] ->
+    let x item 0 p
+    let y item 1 p
+
+    ; Create an activity turtle at position (x, y)
+    crt 1 [
+      setxy x y
+      set size 3
+      set shape "triangle"
+      set color yellow
+      ; Add newlines to position the label below the turtle and set the label color to white
+      set label (word "\n" a)
+      set label-color white
+    ]
+  ])
+end
+
+
+; Procedure to create links between rides and activities
+to attraction-create-links
+
+  ; Carousel links
+  ask one-of turtles with [label = "\nCarousel"] [
+    create-link-with one-of turtles with [label = "\nHunt"]
+    create-link-with one-of turtles with [label = "\nFlight"]
+    create-link-with one-of turtles with [label = "\nObservatory"]
+    create-link-with one-of turtles with [label = "\nGlide"]
+  ]
+
+  ; Glide links
+  ask one-of turtles with [label = "\nGlide"] [
+    create-link-with one-of turtles with [label = "\nDash"]
+    create-link-with one-of turtles with [label = "\nCarnival"]
+    create-link-with one-of turtles with [label = "\nSkyward"]
+  ]
+
+  ; Skyward links
+  ask one-of turtles with [label = "\nSkyward"] [
+    create-link-with one-of turtles with [label = "\nMaze"]
+    create-link-with one-of turtles with [label = "\nEnchanted"]
+    create-link-with one-of turtles with [label = "\nTunnel"]
+  ]
+
+  ; Tunnel links
+  ask one-of turtles with [label = "\nTunnel"] [
+    create-link-with one-of turtles with [label = "\nFalls"]
+    create-link-with one-of turtles with [label = "\nAqua"]
+  ]
+
+  ; Observatory links
+  ask one-of turtles with [label = "\nObservatory"] [
+    create-link-with one-of turtles with [label = "\nVoyage"]
+    create-link-with one-of turtles with [label = "\nThunderbolt"]
+  ]
+
+  ; Tunnel links
+  ask one-of turtles with [label = "\nThunderbolt"] [
+    create-link-with one-of turtles with [label = "\nRobotics"]
+    create-link-with one-of turtles with [label = "\nLaser"]
+    create-link-with one-of turtles with [label = "Entrance"]
+  ]
+
+  ; Aqua links
+  ask one-of turtles with [label = "\nAqua"] [
+    create-link-with one-of turtles with [label = "\nWizard"]
+    create-link-with one-of turtles with [label = "\nSafari"]
+    create-link-with one-of turtles with [label = "\nCoaster"]
+    create-link-with one-of turtles with [label = "Entrance"]
+  ]
+
+end

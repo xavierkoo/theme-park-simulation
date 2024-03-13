@@ -1,4 +1,4 @@
-__includes ["modules/visitors.nls"]
+__includes ["modules/visitors.nls" "modules/attractions.nls"]
 
 ; Setup the environment
 globals [
@@ -39,10 +39,10 @@ to setup
   resize-world -30 30 -30 30 ; 121x121 grid
   set-patch-size 10 ; For visibility
   set-default-shape turtles "square"  ; Default shape for rides
-  create-rides
-  create-activities
-  create-entrance
-  create-links
+  attraction-create-rides
+  attraction-create-activities
+  attraction-create-entrance
+  attraction-create-links
   reset-ticks
 end
 
@@ -112,124 +112,6 @@ ask visitors [
 ]
 tick
 end
-
-
-; Procedure to create rides
-
-to create-entrance
-  crt 1 [
-    setxy 0 -28
-    set shape "house"
-    set color brown
-    set size 4
-    set label (word "Entrance")
-    set label-color white
-  ]
-end
-
-to create-rides
-  let rides ["Thunderbolt" "Carousel" "Aqua" "Skyward" "Flight" "Coaster" "Glide" "Dash" "Voyage" "Tunnel" "Falls" "Safari"]
-  let positions [[-20 -3] [-20 20] [20 -3] [20 20] [-20 25] [15 -3]
-  [0 20] [0 25] [-25 10] [20 10] [25 10] [20 -8]
-  ] ; Adjust positions as needed
-
-  (foreach rides positions [
-    [r p] ->
-    let x item 0 p
-    let y item 1 p
-
-    ; Create a ride turtle at position (x, y)
-    crt 1 [
-      setxy x y
-      set size 3
-      set shape "square"
-      set color green
-      set label (word "\n" r)
-      set label-color white
-    ]
-  ])
-end
-
-
-; Procedure to create activities
-to create-activities
-  let activities ["Laser" "Enchanted" "Hunt" "Wizard" "Observatory" "Maze" "Robotics" "Carnival"]
-  let positions [[-20 -8] [25 20] [-25 20] [25 -3]
-  [-20 10] [20 25] [-25 -3] [0 15]
-  ] ; Adjust positions as needed
-
-  (foreach activities positions [
-    [a p] ->
-    let x item 0 p
-    let y item 1 p
-
-    ; Create an activity turtle at position (x, y)
-    crt 1 [
-      setxy x y
-      set size 3
-      set shape "triangle"
-      set color yellow
-      ; Add newlines to position the label below the turtle and set the label color to white
-      set label (word "\n" a)
-      set label-color white
-    ]
-  ])
-end
-
-
-; Procedure to create links between rides and activities
-to create-links
-
-  ; Carousel links
-  ask one-of turtles with [label = "\nCarousel"] [
-    create-link-with one-of turtles with [label = "\nHunt"]
-    create-link-with one-of turtles with [label = "\nFlight"]
-    create-link-with one-of turtles with [label = "\nObservatory"]
-    create-link-with one-of turtles with [label = "\nGlide"]
-  ]
-
-  ; Glide links
-  ask one-of turtles with [label = "\nGlide"] [
-    create-link-with one-of turtles with [label = "\nDash"]
-    create-link-with one-of turtles with [label = "\nCarnival"]
-    create-link-with one-of turtles with [label = "\nSkyward"]
-  ]
-
-  ; Skyward links
-  ask one-of turtles with [label = "\nSkyward"] [
-    create-link-with one-of turtles with [label = "\nMaze"]
-    create-link-with one-of turtles with [label = "\nEnchanted"]
-    create-link-with one-of turtles with [label = "\nTunnel"]
-  ]
-
-  ; Tunnel links
-  ask one-of turtles with [label = "\nTunnel"] [
-    create-link-with one-of turtles with [label = "\nFalls"]
-    create-link-with one-of turtles with [label = "\nAqua"]
-  ]
-
-  ; Observatory links
-  ask one-of turtles with [label = "\nObservatory"] [
-    create-link-with one-of turtles with [label = "\nVoyage"]
-    create-link-with one-of turtles with [label = "\nThunderbolt"]
-  ]
-
-  ; Tunnel links
-  ask one-of turtles with [label = "\nThunderbolt"] [
-    create-link-with one-of turtles with [label = "\nRobotics"]
-    create-link-with one-of turtles with [label = "\nLaser"]
-    create-link-with one-of turtles with [label = "Entrance"]
-  ]
-
-  ; Aqua links
-  ask one-of turtles with [label = "\nAqua"] [
-    create-link-with one-of turtles with [label = "\nWizard"]
-    create-link-with one-of turtles with [label = "\nSafari"]
-    create-link-with one-of turtles with [label = "\nCoaster"]
-    create-link-with one-of turtles with [label = "Entrance"]
-  ]
-
-end
 @#$#@#$#@
 GRAPHICS-WINDOW
 210
@@ -259,10 +141,10 @@ ticks
 30.0
 
 BUTTON
-39
-173
-105
-206
+20
+10
+86
+43
 NIL
 setup
 NIL
@@ -276,70 +158,70 @@ NIL
 1
 
 SLIDER
-32
-63
-204
-96
-fanatic-prob
-fanatic-prob
-0
-100
-50.0
-1
-1
-NIL
-HORIZONTAL
-
-SLIDER
-43
-119
-215
-152
-enthu-prob
-enthu-prob
-0
-100
-50.0
-1
-1
-NIL
-HORIZONTAL
-
-SLIDER
-77
-297
-249
-330
-average-prob
-average-prob
-0
-100
-50.0
-1
-1
-NIL
-HORIZONTAL
-
-SLIDER
-69
-396
-241
-429
-leisure-prob
-leisure-prob
-0
-100
-50.0
-1
-1
-NIL
-HORIZONTAL
-
-SLIDER
+20
 49
-479
-221
-512
+192
+82
+fanatic-prob
+fanatic-prob
+0
+100
+50.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+19
+89
+191
+122
+enthu-prob
+enthu-prob
+0
+100
+50.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+19
+129
+191
+162
+average-prob
+average-prob
+0
+100
+50.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+18
+171
+190
+204
+leisure-prob
+leisure-prob
+0
+100
+50.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+17
+214
+189
+247
 passive-prob
 passive-prob
 0
