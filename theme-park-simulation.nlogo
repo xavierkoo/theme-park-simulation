@@ -1,3 +1,4 @@
+__includes ["modules/visitors.nls"]
 
 ; Setup the environment
 globals [
@@ -8,12 +9,9 @@ globals [
   archetype-crf ; rf table to determine each visitor's archetype
 ]
 
-breed [
-  visitors visitor
-]
-breed [
-  attractions attraction
-]
+breed [visitors visitor]
+breed [attractions attraction]
+
 visitors-own [
   archetype
   patience-level ; baulking point, max queue time of visitor, influenced by attraction(pops) and archetype.
@@ -27,9 +25,9 @@ visitors-own [
 ]
 
 attractions-own [
-attraction-type ; "ride" or "activity"
-popularity ; A numeric value indicating its popularity
-service-rate ; How fast the attraction can serve visitors (e.g., ride duration or activity length)
+  attraction-type ; "ride" or "activity"
+  popularity ; A numeric value indicating its popularity
+  service-rate ; How fast the attraction can serve visitors (e.g., ride duration or activity length)
 ]
 
 
@@ -38,7 +36,6 @@ to setup
   clear-all
   setup-visitor-mix
   setup-visitors
-  setup-attractions
   resize-world -30 30 -30 30 ; 121x121 grid
   set-patch-size 10 ; For visibility
   set-default-shape turtles "square"  ; Default shape for rides
@@ -71,20 +68,20 @@ end
 
 ; Function to randomly decide visitor archetype
 to-report determine-archetype
-; generate random float
-let r random-float 1
-; find index of first item in CRF >= r
-let index 0
-foreach archetype-crf [
-  i ->
-  ifelse r <= i [
-    report item index visitor-archetypes
-  ] [
-    set index index + 1
+  ; generate random float
+  let r random-float 1
+  ; find index of first item in CRF >= r
+  let index 0
+  foreach archetype-crf [
+    i ->
+    ifelse r <= i [
+      report item index visitor-archetypes
+    ] [
+      set index index + 1
+    ]
   ]
-]
-; if no CRF > r, report last item
-report last visitor-archetypes
+  ; if no CRF > r, report last item
+  report last visitor-archetypes
 end
 
 ; Create visitors with their properties
@@ -95,7 +92,7 @@ create-visitors number-of-visitors [
   set patience-level random 10 ; Simplified for example
   set satisfaction-level 100 ; Starting satisfaction level
   set expected-attractions-rate random 5 + 3 ; Example range
-  set staying-time normal 8 2 ; Mean of 8 hours with some standard deviation
+  set staying-time random-normal 8 2 ; Mean of 8 hours with some standard deviation
   set repeat-ride? one-of [true false] ; Depending on archetype, adjust probability (Not Implemented Yet)
   set priority-pass-usage-limit random 3 ; Example limit
   ; Set initial position and other initial states
@@ -103,74 +100,17 @@ create-visitors number-of-visitors [
 ]
 end
 
-; Setup procedure to create attractions
-to setup-attractions
-clear-all
-; Assuming you have a predefined number of each type for simplicity
-create-attractions number-of-rides [
-  set shape "triangle" ; Just an example, you can customize the appearance
-  set color red ; Rides could be red
-  set attraction-type "ride"
-  set popularity random-float 1.0 ; Example, set based on your criteria
-  set service-rate 5 ; Example, adjust based on your simulation needs
-  ; Set the location of the attraction on the map
-  ; Assuming you have a method for positioning them, could be random or fixed
-  setxy random-xcor random-ycor
-]
-
-create-attractions number-of-activities [
-  set shape "square" ; Different shape for activities
-  set color blue ; Activities could be blue
-  set attraction-type "activity"
-  set popularity random-float 1.0 ; Adjust as needed
-  set service-rate 10 ; Example, likely different from rides
-  ; Set the location, similarly as above
-  setxy random-xcor random-ycor
-]
-; Add additional initialization code as necessary
-end
-
 ; Main simulation loop
 to go
 ask visitors [
-  make-decisions
-  move-towards-attraction
-  check-queue
-  enjoy-attraction
-  update-satisfaction
-  check-leaving-conditions
+  visitor-make-decisions
+  visitor-move-towards-attraction
+  visitor-check-queue
+  visitor-enjoy-attraction
+  visitor-update-satisfaction
+  visitor-check-leaving-conditions
 ]
 tick
-end
-
-; Visitor makes decisions on which attraction to visit
-to make-decisions
-; Implement logic based on visitor preferences and knowledge of queues
-end
-
-; Move towards the selected attraction
-to move-towards-attraction
-; Implement logic for movement towards an attraction
-end
-
-; Check the queue of the attraction and decide whether to stay
-to check-queue
-; Implement logic based on patience level and queue length
-end
-
-; Visitor enjoys the attraction and updates state
-to enjoy-attraction
-; Implement logic for enjoying an attraction and its effects
-end
-
-; Update satisfaction based on experiences
-to update-satisfaction
-; Implement logic for updating satisfaction levels
-end
-
-; Check if visitor decides to leave the park
-to check-leaving-conditions
-; Implement logic based on satisfaction level and staying time
 end
 
 
@@ -178,11 +118,11 @@ end
 
 to create-entrance
   crt 1 [
-    setxy 0 -29
+    setxy 0 -28
     set shape "house"
     set color brown
-    set size 3
-    set label (word "\n" "Entrance")
+    set size 4
+    set label (word "Entrance")
     set label-color white
   ]
 end
@@ -201,7 +141,7 @@ to create-rides
     ; Create a ride turtle at position (x, y)
     crt 1 [
       setxy x y
-      set size 2
+      set size 3
       set shape "square"
       set color green
       set label (word "\n" r)
@@ -226,7 +166,7 @@ to create-activities
     ; Create an activity turtle at position (x, y)
     crt 1 [
       setxy x y
-      set size 2
+      set size 3
       set shape "triangle"
       set color yellow
       ; Add newlines to position the label below the turtle and set the label color to white
@@ -278,7 +218,7 @@ to create-links
   ask one-of turtles with [label = "\nThunderbolt"] [
     create-link-with one-of turtles with [label = "\nRobotics"]
     create-link-with one-of turtles with [label = "\nLaser"]
-    create-link-with one-of turtles with [label = "\nEntrance"]
+    create-link-with one-of turtles with [label = "Entrance"]
   ]
 
   ; Aqua links
@@ -286,7 +226,7 @@ to create-links
     create-link-with one-of turtles with [label = "\nWizard"]
     create-link-with one-of turtles with [label = "\nSafari"]
     create-link-with one-of turtles with [label = "\nCoaster"]
-    create-link-with one-of turtles with [label = "\nEntrance"]
+    create-link-with one-of turtles with [label = "Entrance"]
   ]
 
 end
