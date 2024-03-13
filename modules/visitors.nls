@@ -2,6 +2,20 @@ globals [ 
 
 ]  
 
+breed [visitors visitor]
+
+visitors-own [
+  archetype
+  patience-level ; baulking point, max queue time of visitor, influenced by attraction(pops) and archetype.
+  satisfaction-level ; threshold for determining whether visitor stays in the park influenced by archetype and expected-attractions-rate
+  expected-attractions-rate ; number of attractions visitors expects to take part in by the end of the day influenced by archetype
+  staying-time ; duration of visitors staying in the park.
+  repeat-ride? ; boolean, whether visitor repeats the ride
+  priority-pass-usage-limit ; value 1-99(unlimited) max number of pass a visitor can get in a visit
+  current-queue ; gpt ??
+  attraction-pref ; 0.0-1.0 indicates visitors pref for rides of activities (larger number pref for rides)
+]
+
 ; Visitor makes decisions on which attraction to visit 
 to visitor-make-decisions 
   ; Implement logic based on visitor preferences and knowledge of queues 

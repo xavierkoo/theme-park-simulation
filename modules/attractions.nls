@@ -2,6 +2,14 @@ globals [
   
 ]
 
+breed [attractions attraction]
+
+attractions-own [
+  attraction-type ; "ride" or "activity"
+  popularity ; A numeric value indicating its popularity
+  service-rate ; How fast the attraction can serve visitors (e.g., ride duration or activity length)
+]
+
 to attraction-create-entrance
   crt 1 [
     setxy 0 -28

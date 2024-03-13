@@ -9,28 +9,6 @@ globals [
   archetype-crf ; rf table to determine each visitor's archetype
 ]
 
-breed [visitors visitor]
-breed [attractions attraction]
-
-visitors-own [
-  archetype
-  patience-level ; baulking point, max queue time of visitor, influenced by attraction(pops) and archetype.
-  satisfaction-level ; threshold for determining whether visitor stays in the park influenced by archetype and expected-attractions-rate
-  expected-attractions-rate ; number of attractions visitors expects to take part in by the end of the day influenced by archetype
-  staying-time ; duration of visitors staying in the park.
-  repeat-ride? ; boolean, whether visitor repeats the ride
-  priority-pass-usage-limit ; value 1-99(unlimited) max number of pass a visitor can get in a visit
-  current-queue ; gpt ??
-  attraction-pref ; 0.0-1.0 indicates visitors pref for rides of activities (larger number pref for rides)
-]
-
-attractions-own [
-  attraction-type ; "ride" or "activity"
-  popularity ; A numeric value indicating its popularity
-  service-rate ; How fast the attraction can serve visitors (e.g., ride duration or activity length)
-]
-
-
 ; Setup the simulation
 to setup
   clear-all
@@ -54,8 +32,8 @@ to setup-visitor-mix
   ; Normalize archetype-prob
   let total-archetype-prob reduce + archetype-prob
   if total-archetype-prob > 0 [
-  set archetype-prob map [prob -> prob / total-archetype-prob] archetype-prob
-]
+    set archetype-prob map [prob -> prob / total-archetype-prob] archetype-prob
+  ]
 
   set archetype-crf []
   let s 0
@@ -86,31 +64,31 @@ end
 
 ; Create visitors with their properties
 to setup-visitors
-create-visitors number-of-visitors [
-  ; Assign visitor properties based on archetype and other characteristics
-  set archetype determine-archetype
-  set patience-level random 10 ; Simplified for example
-  set satisfaction-level 100 ; Starting satisfaction level
-  set expected-attractions-rate random 5 + 3 ; Example range
-  set staying-time random-normal 8 2 ; Mean of 8 hours with some standard deviation
-  set repeat-ride? one-of [true false] ; Depending on archetype, adjust probability (Not Implemented Yet)
-  set priority-pass-usage-limit random 3 ; Example limit
-  ; Set initial position and other initial states
-  setxy random-xcor random-ycor
-]
+  create-visitors number-of-visitors [
+    ; Assign visitor properties based on archetype and other characteristics
+    set archetype determine-archetype
+    set patience-level random 10 ; Simplified for example
+    set satisfaction-level 100 ; Starting satisfaction level
+    set expected-attractions-rate random 5 + 3 ; Example range
+    set staying-time random-normal 8 2 ; Mean of 8 hours with some standard deviation
+    set repeat-ride? one-of [true false] ; Depending on archetype, adjust probability (Not Implemented Yet)
+    set priority-pass-usage-limit random 3 ; Example limit
+                                           ; Set initial position and other initial states
+    setxy random-xcor random-ycor
+  ]
 end
 
 ; Main simulation loop
 to go
-ask visitors [
-  visitor-make-decisions
-  visitor-move-towards-attraction
-  visitor-check-queue
-  visitor-enjoy-attraction
-  visitor-update-satisfaction
-  visitor-check-leaving-conditions
-]
-tick
+  ask visitors [
+    visitor-make-decisions
+    visitor-move-towards-attraction
+    visitor-check-queue
+    visitor-enjoy-attraction
+    visitor-update-satisfaction
+    visitor-check-leaving-conditions
+  ]
+  tick
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
