@@ -1,19 +1,16 @@
-__includes ["modules/visitors.nls" "modules/attractions.nls"]
+__includes ["modules/visitors.nls" "modules/attractions.nls" "modules/spawning.nls"]
 
 ; Setup the environment
 globals [
   operating-hours ; number of ticks
   priority-pass-threshold; number of ticks, once threshold is reached priority pass(pp) will be enabled for the attractions
-  number-of-visitors
-  visitor-archetypes ; list of possible visitor archetypes
-  archetype-crf ; rf table to determine each visitor's archetype
 ]
 
 ; Setup the simulation
 to setup
   clear-all
-  setup-visitor-mix
-  setup-visitors
+  spawning-visitor-mix
+  spawning-visitors
   resize-world -30 30 -30 30 ; 121x121 grid
   set-patch-size 10 ; For visibility
   set-default-shape turtles "square"  ; Default shape for rides
@@ -22,60 +19,6 @@ to setup
   attraction-create-entrance
   attraction-create-links
   reset-ticks
-end
-
-; Create the RF table for determining visitor archetype
-to setup-visitor-mix
-  set visitor-archetypes ["Ride Fanatic" "Ride Enthusiast" "Average Visitor" "Leisure Enjoyer" "Passive Sightseer"]
-  let archetype-prob (list fanatic-prob enthu-prob average-prob leisure-prob passive-prob) ; Adjustable by sliders
-
-  ; Normalize archetype-prob
-  let total-archetype-prob reduce + archetype-prob
-  if total-archetype-prob > 0 [
-    set archetype-prob map [prob -> prob / total-archetype-prob] archetype-prob
-  ]
-
-  set archetype-crf []
-  let s 0
-  foreach archetype-prob [
-    i ->
-    set s s + i
-    set archetype-crf lput s archetype-crf
-  ]
-end
-
-; Function to randomly decide visitor archetype
-to-report determine-archetype
-  ; generate random float
-  let r random-float 1
-  ; find index of first item in CRF >= r
-  let index 0
-  foreach archetype-crf [
-    i ->
-    ifelse r <= i [
-      report item index visitor-archetypes
-    ] [
-      set index index + 1
-    ]
-  ]
-  ; if no CRF > r, report last item
-  report last visitor-archetypes
-end
-
-; Create visitors with their properties
-to setup-visitors
-  create-visitors number-of-visitors [
-    ; Assign visitor properties based on archetype and other characteristics
-    set archetype determine-archetype
-    set patience-level random 10 ; Simplified for example
-    set satisfaction-level 100 ; Starting satisfaction level
-    set expected-attractions-rate random 5 + 3 ; Example range
-    set staying-time random-normal 8 2 ; Mean of 8 hours with some standard deviation
-    set repeat-ride? one-of [true false] ; Depending on archetype, adjust probability (Not Implemented Yet)
-    set priority-pass-usage-limit random 3 ; Example limit
-                                           ; Set initial position and other initial states
-    setxy random-xcor random-ycor
-  ]
 end
 
 ; Main simulation loop
