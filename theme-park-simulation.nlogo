@@ -16,7 +16,6 @@ to setup
   attraction-create-activities
   attraction-create-entrance
   attraction-create-links
-  spawning-visitor-arrival
   spawning-visitor-mix
   reset-ticks
 end

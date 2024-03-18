@@ -1,13 +1,7 @@
 globals [
-  visitor-arrival ; poisson distribution to determine visitor arrival times
   visitor-archetypes ; list of possible visitor archetypes
   archetype-crf ; rf table to determine each visitor's archetype
 ]
-
-; Create the Poisson distribution to determine when visitors arrive at the park
-to spawning-visitor-arrival
-  ; to do
-end
 
 ; Create the RF table for determining visitor archetype
 to spawning-visitor-mix
@@ -113,5 +107,6 @@ end
 
 ; Determine number of visitors to spawn on current tick
 to spawning-visitors-now
-  spawning-visitors 10
+  let value random-poisson 10
+  spawning-visitors value
 end
