@@ -1,8 +1,13 @@
 globals [
-  number-of-visitors
+  visitor-arrival ; poisson distribution to determine visitor arrival times
   visitor-archetypes ; list of possible visitor archetypes
   archetype-crf ; rf table to determine each visitor's archetype
 ]
+
+; Create the Poisson distribution to determine when visitors arrive at the park
+to spawning-visitor-arrival
+  ; to do
+end
 
 ; Create the RF table for determining visitor archetype
 to spawning-visitor-mix
@@ -43,17 +48,70 @@ to-report determine-archetype
 end
 
 ; Create visitors with their properties
-to spawning-visitors
+to spawning-visitors [number-of-visitors]
   create-visitors number-of-visitors [
-    ; Assign visitor properties based on archetype and other characteristics
+    
+    ; Assign standard visitor properties + location
+    set shape "person"
+    setxy 0 min-pycor ; default position
+    let target one-of turtles with [label = "Entrance"]
+    if target != nobody [ move-to target ] ; move to Entrance
+    
+    ; Assign visitor archetype + properties that are not affected by archetype
+    set priority-pass-usage-limit priority-pass-limit
+    set satisfaction-level 100 ; initial satisfaction level
     set archetype determine-archetype
-    set patience-level random 10 ; Simplified for example
-    set satisfaction-level 100 ; Starting satisfaction level
-    set expected-attractions-rate random 5 + 3 ; Example range
-    set staying-time random-normal 8 2 ; Mean of 8 hours with some standard deviation
-    set repeat-ride? one-of [true false] ; Depending on archetype, adjust probability (Not Implemented Yet)
-    set priority-pass-usage-limit random 3 ; Example limit
-                                           ; Set initial position and other initial states
-    setxy random-xcor random-ycor
+    
+    ; Assign visitor properties that are affected by archetype
+    ifelse archetype = "Ride Fanatic" [
+      ; Ride Fanatic
+      set patience-level random 10 ; Ride Fanatics have high queue patience
+      set expected-attractions-rate random 8 + 5 ; Ride Fanatics expect to visit more attractions
+      set staying-time random-normal 10 2 ; Ride Fanatics tend to spend the most time
+      set repeat-ride? one-of [true true true true] ; Ride Fanatics absolutely likely to repeat rides
+    ] [
+      ifelse archetype = "Ride Enthusiast" [
+        ; Ride Enthusiast
+        set patience-level random 8 ; Ride Enthusiasts have moderate queue patience
+        set expected-attractions-rate random 7 + 4 ; Ride Enthusiasts expect to visit moderate attractions
+        set staying-time random-normal 9 2 ; Ride Enthusiasts spend more time
+        set repeat-ride? one-of [true true true false] ; Ride Enthusiasts likely to repeat rides
+      ] [
+        ifelse archetype = "Average Visitor" [
+          ; Average Visitor
+          set patience-level random 7 ; Average Visitors have reasonable queue patience
+          set expected-attractions-rate random 6 + 3 ; Average Visitors expect to visit fewer attractions
+          set staying-time random-normal 8 2 ; Average Visitors spend average time
+          set repeat-ride? one-of [true true false false] ; Average Visitors may or may not repeat rides
+        ] [
+          ifelse archetype = "Leisure Enjoyer" [
+            ; Leisure Enjoyer
+            set patience-level random 5 ; Leisure Enjoyers have low queue patience
+            set expected-attractions-rate random 5 + 2 ; Leisure Enjoyers expect to visit very few attractions
+            set staying-time random-normal 7 2 ; Leisure Enjoyers tend to spend less time
+            set repeat-ride? one-of [true false false false] ; Leisure Enjoyers rarely repeat rides
+          ] [
+            ifelse archetype = "Passive Sightseer" [
+              ; Passive Sightseer
+              set patience-level random 6 ; Passive Sightseers have somewhat reasonable queue patience
+              set expected-attractions-rate random 5 + 3 ; Passive Sightseers expect to visit few attractions
+              set staying-time random-normal 8 2 ; Passive Sightseers tend to spend average time
+              set repeat-ride? one-of [false false false false] ; Passive Sightseers do not repeat rides
+            ] [
+              ; null (follows Average Visitor)
+              set patience-level random 7
+              set expected-attractions-rate random 6 + 3
+              set staying-time random-normal 8 2
+              set repeat-ride? one-of [true true false false]
+            ]
+          ]
+        ]
+      ]
+    ]
   ]
+end
+
+; Determine number of visitors to spawn on current tick
+to spawning-visitors-now
+  spawning-visitors 10
 end
