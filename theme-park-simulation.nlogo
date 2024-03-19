@@ -11,7 +11,7 @@ to setup
   clear-all
   spawning-visitor-mix
   spawning-visitors
-  resize-world -30 30 -30 30 ; 121x121 grid
+  resize-world -35 35 -35 35 ; 121x121 grid
   set-patch-size 10 ; For visibility
   set-default-shape turtles "square"  ; Default shape for rides
   attraction-create-rides
@@ -31,14 +31,18 @@ to go
     visitor-update-satisfaction
     visitor-check-leaving-conditions
   ]
+  move-visitors
+  update-queues
+    update-attraction-labels ; Call a new procedure to update labels
+
   tick
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
 210
 10
-828
-629
+928
+729
 -1
 -1
 10.0
@@ -51,10 +55,10 @@ GRAPHICS-WINDOW
 1
 1
 1
--30
-30
--30
-30
+-35
+35
+-35
+35
 0
 0
 1
@@ -87,7 +91,7 @@ fanatic-prob
 fanatic-prob
 0
 100
-50.0
+75.0
 1
 1
 NIL
@@ -102,7 +106,7 @@ enthu-prob
 enthu-prob
 0
 100
-50.0
+84.0
 1
 1
 NIL
@@ -117,7 +121,7 @@ average-prob
 average-prob
 0
 100
-50.0
+59.0
 1
 1
 NIL
@@ -132,7 +136,7 @@ leisure-prob
 leisure-prob
 0
 100
-50.0
+54.0
 1
 1
 NIL
@@ -147,7 +151,7 @@ passive-prob
 passive-prob
 0
 100
-50.0
+73.0
 1
 1
 NIL

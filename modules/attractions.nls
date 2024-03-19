@@ -3,11 +3,24 @@ globals [
 ]
 
 breed [attractions attraction]
+breed [vs v]
+
+vs-own [
+  destination ; the attraction the turtle is heading to
+  isWaiting ; boolean indicating if the turtle is waiting in a queue
+  waitTime ; how long the turtle has been waiting
+]
+
 
 attractions-own [
   attraction-type ; "ride" or "activity"
   popularity ; A numeric value indicating its popularity
   service-rate ; How fast the attraction can serve visitors (e.g., ride duration or activity length)
+  waiting-count ; Number of visitors currently waiting
+  queue ; List of visitors waiting for this attraction
+  attraction-name
+  attraction-popularity
+  
 ]
 
 to attraction-create-entrance
@@ -23,8 +36,8 @@ end
 
 to attraction-create-rides
   let rides ["Thunderbolt" "Carousel" "Aqua" "Skyward" "Flight" "Coaster" "Glide" "Dash" "Voyage" "Tunnel" "Falls" "Safari"]
-  let positions [[-20 -3] [-20 20] [20 -3] [20 20] [-20 25] [15 -3]
-  [0 20] [0 25] [-25 10] [20 10] [25 10] [20 -8]
+  let positions [[-20 -3 true] [-20 20 true] [20 -3 true] [20 20 true] [-20 25 true] [11 -3 false]
+  [0 20 false] [0 25 false] [-28 10 false] [20 10 false] [28 10 false] [20 -8 false]
   ] ; Adjust positions as needed
 
   (foreach rides positions [
@@ -33,13 +46,18 @@ to attraction-create-rides
     let y item 1 p
 
     ; Create a ride turtle at position (x, y)
-    crt 1 [
+    create-attractions 1 [
+      set attraction-name r
       setxy x y
       set size 3
       set shape "square"
       set color green
       set label (word "\n" r)
       set label-color white
+      set service-rate 10
+      set waiting-count 0
+      set queue [] ; Initialize the queue as an empty list
+      set attraction-popularity item 2 p
     ]
   ])
 end
@@ -48,9 +66,7 @@ end
 ; Procedure to create activities
 to attraction-create-activities
   let activities ["Laser" "Enchanted" "Hunt" "Wizard" "Observatory" "Maze" "Robotics" "Carnival"]
-  let positions [[-20 -8] [25 20] [-25 20] [25 -3]
-  [-20 10] [20 25] [-25 -3] [0 15]
-  ] ; Adjust positions as needed
+  let positions [[-20 -8] [28 20] [-28 20] [28 -3] [-20 10] [20 25] [-28 -3] [0 15]] ; Adjust positions as needed
 
   (foreach activities positions [
     [a p] ->
@@ -124,3 +140,86 @@ to attraction-create-links
   ]
 
 end
+
+
+
+
+
+to create-visitor [number]
+  repeat number [
+    create-vs 1 [
+      setxy random-xcor random-ycor
+      set shape "person"
+      set color blue
+      ; Find and set an actual turtle as the destination
+      set destination one-of attractions with [label = "\nThunderbolt"] ; This assumes attractions are labeled as such
+      set isWaiting false
+      set waitTime 0
+    ]
+  ]
+end
+
+to move-visitors
+  ask vs [
+    if not isWaiting [
+      face destination ; This now works because destination is a turtle
+      fd 1 ; Adjust speed as necessary
+      if distance destination <= 1 [ ; Adjust proximity as necessary
+        set isWaiting true
+;        ask destination [ set waiting-count waiting-count + 1 ]
+        ; Here you can increase the waitTime of all turtles at this destination
+        ask destination [
+          ; Add visitor to the queue if not already present
+          if not member? myself queue [
+            set queue lput myself queue
+            set waiting-count length queue
+          ]
+        ]
+      ]
+    ]
+  ]
+end
+to update-queues
+  ask attractions [
+    if waiting-count > 0 [
+      ; Increment wait time for the first visitor in the queue
+      ask first queue [ set waitTime waitTime + 1 ]
+      ; Check if the first visitor in the queue has waited long enough
+      ask first queue [
+        if waitTime >= [service-rate] of myself [
+          ; This visitor is done; remove them from the queue
+          ask myself [
+            set queue but-first queue
+            set waiting-count length queue
+          ]
+          ; Reset visitor's state
+          set isWaiting false
+          set waitTime 0
+          set destination one-of (other attractions) ; Choose a new destination
+        ]
+      ]
+    ]
+  ]
+end
+
+to update-attraction-labels
+  ask attractions [
+    ; Assuming 'label' initially contains just the name of the attraction
+    ; and 'waiting-count' is the attribute you've added
+    set label (word waiting-count "\n" attraction-name)
+  ]
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
