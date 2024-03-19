@@ -192,6 +192,35 @@ NIL
 NIL
 1
 
+PLOT
+5
+302
+205
+452
+Number of Visitors
+Time
+Visitors
+0.0
+10.0
+0.0
+10.0
+true
+false
+"" ""
+PENS
+"default" 1.0 0 -16777216 true "" "plot count visitors"
+
+MONITOR
+5
+461
+118
+506
+Visitor Numbers
+count visitors
+17
+1
+11
+
 @#$#@#$#@
 ## WHAT IS IT?
 

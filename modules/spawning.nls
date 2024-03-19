@@ -8,7 +8,7 @@ globals [
 
 ; Create the RF table for determining visitor archetype
 to spawning-visitor-mix
-  set arrival-means [10 9 6 7 8 6 5 4 2]
+  set arrival-means [5 7 8 7 6 6 6 5 5]
   set visitor-archetypes ["Ride Fanatic" "Ride Enthusiast" "Average Visitor" "Leisure Enjoyer" "Passive Sightseer"]
   let archetype-prob (list fanatic-prob enthu-prob average-prob leisure-prob passive-prob) ; Adjustable by sliders
 
@@ -55,7 +55,7 @@ to spawning-visitors [number-of-visitors]
     
     ; Assign standard visitor properties + location
     set shape "person"
-    setxy 0 min-pycor ; default position
+    setxy 0 -28 ; default position
     let target one-of turtles with [label = "Entrance"]
     if target != nobody [ move-to target ] ; move to Entrance
     
@@ -67,40 +67,56 @@ to spawning-visitors [number-of-visitors]
     ; Assign visitor properties that are affected by archetype
     ifelse archetype = "Ride Fanatic" [
       ; Ride Fanatic
+      set color violet
       set patience-level random 10 ; Ride Fanatics have high queue patience
       set expected-attractions-rate random 8 + 5 ; Ride Fanatics expect to visit more attractions
       set staying-time random-normal 10 2 ; Ride Fanatics tend to spend the most time
       set repeat-ride? one-of [true true true true] ; Ride Fanatics absolutely likely to repeat rides
+      set attraction-pref 0.7 ; Ride Fanatics have a high preference for rides
+      set decision-made? false
     ] [
       ifelse archetype = "Ride Enthusiast" [
         ; Ride Enthusiast
+        set color red
         set patience-level random 8 ; Ride Enthusiasts have moderate queue patience
         set expected-attractions-rate random 7 + 4 ; Ride Enthusiasts expect to visit moderate attractions
         set staying-time random-normal 9 2 ; Ride Enthusiasts spend more time
         set repeat-ride? one-of [true true true false] ; Ride Enthusiasts likely to repeat rides
+        set attraction-pref 0.6 ; Ride Enthusiasts have a slightly higher preference for rides
+        set decision-made? false
       ] [
         ifelse archetype = "Average Visitor" [
           ; Average Visitor
+          set color pink
           set patience-level random 7 ; Average Visitors have reasonable queue patience
           set expected-attractions-rate random 6 + 3 ; Average Visitors expect to visit fewer attractions
           set staying-time random-normal 8 2 ; Average Visitors spend average time
           set repeat-ride? one-of [true true false false] ; Average Visitors may or may not repeat rides
+          set attraction-pref 0.5 ; Average Visitors have no preference
+          set decision-made? false
         ] [
           ifelse archetype = "Leisure Enjoyer" [
             ; Leisure Enjoyer
+            set color white
             set patience-level random 5 ; Leisure Enjoyers have low queue patience
             set expected-attractions-rate random 5 + 2 ; Leisure Enjoyers expect to visit very few attractions
             set staying-time random-normal 7 2 ; Leisure Enjoyers tend to spend less time
             set repeat-ride? one-of [true false false false] ; Leisure Enjoyers rarely repeat rides
+            set attraction-pref 0.4 ; Leisure Enjoyers have a slightly higher preference for activities
+            set decision-made? false
           ] [
             ifelse archetype = "Passive Sightseer" [
               ; Passive Sightseer
+              set color cyan
               set patience-level random 6 ; Passive Sightseers have somewhat reasonable queue patience
               set expected-attractions-rate random 5 + 3 ; Passive Sightseers expect to visit few attractions
               set staying-time random-normal 8 2 ; Passive Sightseers tend to spend average time
               set repeat-ride? one-of [false false false false] ; Passive Sightseers do not repeat rides
+              set attraction-pref 0.3 ; Passive Sightseers have a high preference for activities
+              set decision-made? false
             ] [
               ; null (follows Average Visitor)
+              set color gray
               set patience-level random 7
               set expected-attractions-rate random 6 + 3
               set staying-time random-normal 8 2
@@ -120,4 +136,7 @@ to spawning-visitors-now
   let current-mean item (floor (ticks / 100)) arrival-means
   let value random-poisson current-mean
   spawning-visitors value
+  ask visitors [
+    stamp  ; This will draw the visitor on top of everything else at its current location
+  ]
 end
