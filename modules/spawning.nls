@@ -1,10 +1,14 @@
 globals [
+  arrival-means ; list of mean values for visitor spawning based on tick count
   visitor-archetypes ; list of possible visitor archetypes
   archetype-crf ; rf table to determine each visitor's archetype
 ]
 
+; ------------------------------------------------------------------------------------------------------------------
+
 ; Create the RF table for determining visitor archetype
 to spawning-visitor-mix
+  set arrival-means [10 9 6 7 8 6 5 4 2]
   set visitor-archetypes ["Ride Fanatic" "Ride Enthusiast" "Average Visitor" "Leisure Enjoyer" "Passive Sightseer"]
   let archetype-prob (list fanatic-prob enthu-prob average-prob leisure-prob passive-prob) ; Adjustable by sliders
 
@@ -23,6 +27,8 @@ to spawning-visitor-mix
   ]
 end
 
+; ------------------------------------------------------------------------------------------------------------------
+
 ; Function to randomly decide visitor archetype
 to-report determine-archetype
   ; generate random float
@@ -40,6 +46,8 @@ to-report determine-archetype
   ; if no CRF > r, report last item
   report last visitor-archetypes
 end
+
+; ------------------------------------------------------------------------------------------------------------------
 
 ; Create visitors with their properties
 to spawning-visitors [number-of-visitors]
@@ -105,8 +113,11 @@ to spawning-visitors [number-of-visitors]
   ]
 end
 
+; ------------------------------------------------------------------------------------------------------------------
+
 ; Determine number of visitors to spawn on current tick
 to spawning-visitors-now
-  let value random-poisson 10
+  let current-mean item (floor (ticks / 100)) arrival-means
+  let value random-poisson current-mean
   spawning-visitors value
 end
