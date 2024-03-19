@@ -55,6 +55,7 @@ to spawning-visitors [number-of-visitors]
     
     ; Assign standard visitor properties + location
     set shape "person"
+    set size 0.8
     setxy 0 -28 ; default position
     let target one-of turtles with [label = "Entrance"]
     if target != nobody [ move-to target ] ; move to Entrance
