@@ -18,11 +18,13 @@ to setup
   attraction-create-activities
   attraction-create-entrance
   attraction-create-links
+  spawning-visitor-mix
   reset-ticks
 end
 
 ; Main simulation loop
 to go
+  spawning-visitors-now
   ask visitors [
     visitor-make-decisions
     visitor-move-towards-attraction
@@ -156,6 +158,38 @@ passive-prob
 1
 NIL
 HORIZONTAL
+
+SLIDER
+18
+260
+190
+293
+priority-pass-limit
+priority-pass-limit
+0
+100
+3.0
+1
+1
+NIL
+HORIZONTAL
+
+BUTTON
+97
+10
+160
+43
+NIL
+go
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
 
 @#$#@#$#@
 ## WHAT IS IT?
