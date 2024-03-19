@@ -1,4 +1,4 @@
-__includes ["modules/attractions.nls" "modules/visitors.nls" "modules/spawning.nls"]
+__includes ["modules/attractions.nls" "modules/visitors.nls" "modules/spawning.nls" "modules/clown.nls"]
 
 ; Setup the environment
 globals [
@@ -9,6 +9,7 @@ globals [
 ; Setup the simulation
 to setup
   clear-all
+  c
   spawning-visitor-mix
   resize-world -35 35 -35 35 ; 121x121 grid
   set-patch-size 10 ; For visibility
@@ -94,7 +95,7 @@ fanatic-prob
 fanatic-prob
 0
 100
-74.0
+100.0
 1
 1
 NIL
@@ -109,7 +110,7 @@ enthu-prob
 enthu-prob
 0
 100
-84.0
+25.0
 1
 1
 NIL
@@ -193,11 +194,11 @@ NIL
 1
 
 PLOT
-5
-302
-205
-452
-Number of Visitors
+6
+300
+206
+450
+Number of Park Visitors
 Time
 Visitors
 0.0
@@ -211,11 +212,11 @@ PENS
 "default" 1.0 0 -16777216 true "" "plot count visitors"
 
 MONITOR
-5
-461
-118
-506
-Visitor Numbers
+6
+459
+153
+504
+Current Visitor Count
 count visitors
 17
 1

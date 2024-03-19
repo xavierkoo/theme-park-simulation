@@ -74,7 +74,8 @@ to attraction-create-activities
     let y item 1 p
 
     ; Create an activity turtle at position (x, y)
-    crt 1 [
+    create-attractions 1 [
+      set attraction-name a
       setxy x y
       set size 3
       set shape "triangle"
