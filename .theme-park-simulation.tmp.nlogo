@@ -1,4 +1,4 @@
-__includes ["modules/visitors.nls" "modules/attractions.nls" "modules/spawning.nls"]
+__includes ["modules/attractions.nls" "modules/visitors.nls" "modules/spawning.nls"]
 
 ; Setup the environment
 globals [
@@ -10,7 +10,6 @@ globals [
 to setup
   clear-all
   spawning-visitor-mix
-
   resize-world -35 35 -35 35 ; 121x121 grid
   set-patch-size 10 ; For visibility
   set-default-shape turtles "square"  ; Default shape for rides
@@ -18,7 +17,6 @@ to setup
   attraction-create-activities
   attraction-create-entrance
   attraction-create-links
-  spawning-visitor-mix
   reset-ticks
 end
 
@@ -26,8 +24,11 @@ end
 to go
   spawning-visitors-now
   ask visitors [
-    visitor-make-decisions
-    visitor-move-towards-attraction
+    ifelse decision-made? [
+      visitor-move-to-attraction
+    ] [
+      visitor-make-decisions
+    ]
     visitor-check-queue
     visitor-enjoy-attraction
     visitor-update-satisfaction
@@ -54,8 +55,8 @@ GRAPHICS-WINDOW
 1
 1
 0
-1
-1
+0
+0
 1
 -35
 35
@@ -93,7 +94,7 @@ fanatic-prob
 fanatic-prob
 0
 100
-75.0
+74.0
 1
 1
 NIL
@@ -181,7 +182,7 @@ BUTTON
 43
 NIL
 go
-NIL
+T
 1
 T
 OBSERVER
