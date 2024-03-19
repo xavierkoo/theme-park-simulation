@@ -1,0 +1,24 @@
+; Procedure to create the clown face with blue hair for Clown Land
+to create-clown-face
+  ; Draw the face circle
+  ask patches with [pxcor > -6 and pxcor < 6 and pycor > -6 and pycor < 6] [
+    if (pxcor ^ 2 + pycor ^ 2) <= 25 [set pcolor white]
+  ]
+
+  ; Draw the blue hair
+  ask patches with [pycor > 4 and (pxcor ^ 2 + (pycor - 3) ^ 2) < 36] [
+    set pcolor blue
+  ]
+
+  ; Draw the eyes
+  ask patches with [pxcor = -2 and pycor = 3] [ set pcolor black ]
+  ask patches with [pxcor = 2 and pycor = 3] [ set pcolor black ]
+
+  ; Draw the nose
+  ask patches with [pxcor = 0 and pycor = 0] [ set pcolor red ]
+
+  ; Draw the smiley mouth
+  ask patches with [ (pxcor = -3 or pxcor = 3) and pycor = -2] [ set pcolor pink ] ; corners of the mouth
+  ask patches with [ (pxcor = -2 or pxcor = 2) and pycor = -3] [ set pcolor pink ] ; start curving
+  ask patches with [ pxcor > -2 and pxcor < 2 and pycor = -4] [ set pcolor pink ] ; bottom of the smile
+end
