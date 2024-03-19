@@ -19,7 +19,7 @@ attractions-own [
   waiting-count ; Number of visitors currently waiting
   queue ; List of visitors waiting for this attraction
   attraction-name
-  attraction-popularity
+  attraction-popularity ; true is popular
   
 ]
 
@@ -141,24 +141,6 @@ to attraction-create-links
 
 end
 
-
-
-
-
-to create-visitor [number]
-  repeat number [
-    create-vs 1 [
-      setxy random-xcor random-ycor
-      set shape "person"
-      set color blue
-      ; Find and set an actual turtle as the destination
-      set destination one-of attractions with [label = "\nThunderbolt"] ; This assumes attractions are labeled as such
-      set isWaiting false
-      set waitTime 0
-    ]
-  ]
-end
-
 to move-visitors
   ask vs [
     if not isWaiting [
@@ -166,7 +148,7 @@ to move-visitors
       fd 1 ; Adjust speed as necessary
       if distance destination <= 1 [ ; Adjust proximity as necessary
         set isWaiting true
-;        ask destination [ set waiting-count waiting-count + 1 ]
+        ; ask destination [ set waiting-count waiting-count + 1 ]
         ; Here you can increase the waitTime of all turtles at this destination
         ask destination [
           ; Add visitor to the queue if not already present
@@ -212,6 +194,23 @@ end
 
 
 
+
+
+;
+;to create-visitor [number]
+;  repeat number [
+;    create-vs 1 [
+;      setxy random-xcor random-ycor
+;      set shape "person"
+;      set color blue
+;      ; Find and set an actual turtle as the destination
+;      set destination one-of attractions with [label = "\nThunderbolt"] ; This assumes attractions are labeled as such
+;      set isWaiting false
+;      set waitTime 0
+;    ]
+;  ]
+;end
+;
 
 
 
