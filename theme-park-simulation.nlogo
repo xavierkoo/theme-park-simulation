@@ -37,7 +37,8 @@ to go
   ]
   move-visitors
   update-queues
-    update-attraction-labels ; Call a new procedure to update labels
+  update-attraction-labels ; Call a new procedure to update labels
+
 
   tick
 end
@@ -155,7 +156,7 @@ passive-prob
 passive-prob
 0
 100
-73.0
+100.0
 1
 1
 NIL
@@ -170,7 +171,7 @@ priority-pass-limit
 priority-pass-limit
 0
 100
-3.0
+100.0
 1
 1
 NIL
