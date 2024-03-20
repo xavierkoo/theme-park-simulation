@@ -138,8 +138,7 @@ end
 
 ; Determine number of visitors to spawn on current tick
 to spawning-visitors-now
-  if ticks < 5 [
   let current-mean item (floor (ticks / 100)) arrival-means
   let value random-poisson current-mean
-    spawning-visitors value]
+  spawning-visitors value
 end
