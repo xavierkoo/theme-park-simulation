@@ -9,6 +9,11 @@ to create-clown-face
   ask patches with [pycor > 4 and (pxcor ^ 2 + (pycor - 3) ^ 2) < 36] [
     set pcolor blue
   ]
+  
+  ; Hair Detailing
+  ask patches with [ (pycor = 8 or pycor = 7 or pycor = 6 or pycor = 5) and pxcor = 0 ] [ set pcolor black ]
+  ask patches with [ (pxcor = 1 or pxcor = -1) and pycor = 8 ] [ set pcolor black ]
+  ask patches with [ (pxcor = 5 or pxcor = -5) and pycor = 5 ] [ set pcolor black ]
 
   ; Draw the eyes
   ask patches with [pxcor = -2 and pycor = 3] [ set pcolor black ]

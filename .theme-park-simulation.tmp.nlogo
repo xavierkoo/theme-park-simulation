@@ -147,10 +147,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-19
-131
-191
-164
+112
+129
+284
+162
 passive-prob
 passive-prob
 0
@@ -162,10 +162,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-201
-131
-373
-164
+18
+175
+190
+208
 priority-pass-limit
 priority-pass-limit
 0
@@ -194,10 +194,10 @@ NIL
 1
 
 PLOT
-9
-174
-378
-360
+5
+223
+374
+409
 Number of Park Visitors
 Time
 Visitors
@@ -217,10 +217,10 @@ PENS
 "Passive Sightseer" 1.0 0 -11221820 true "" "plot count visitors with [color = cyan]"
 
 MONITOR
-10
-371
-157
-416
+6
+493
+153
+538
 Current Visitor Count
 count visitors
 17
