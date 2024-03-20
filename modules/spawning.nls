@@ -5,7 +5,7 @@ globals [
 ]
 
 ; ------------------------------------------------------------------------------------------------------------------
-
+ 
 ; Create the RF table for determining visitor archetype
 to spawning-visitor-mix
   set arrival-means [5 7 8 7 6 6 6 5 5]
@@ -57,8 +57,12 @@ to spawning-visitors [number-of-visitors]
     set shape "person"
     set size 0.8
     setxy 0 -28 ; default position
-    let target one-of turtles with [label = "Entrance"]
-    if target != nobody [ move-to target ] ; move to Entrance
+    set path []
+    set isWaiting false
+    set waitTime 0
+    set decision-made? false
+    set current-location one-of turtles with [label = "\nEntrance"]
+;    if target != nobody [ move-to target ] ; move to Entrance
     
     ; Assign visitor archetype + properties that are not affected by archetype
     set priority-pass-usage-limit priority-pass-limit
@@ -134,7 +138,8 @@ end
 
 ; Determine number of visitors to spawn on current tick
 to spawning-visitors-now
+  if ticks < 5 [
   let current-mean item (floor (ticks / 100)) arrival-means
   let value random-poisson current-mean
-  spawning-visitors value
+    spawning-visitors value]
 end

@@ -6,13 +6,6 @@ breed [attractions attraction]
 breed [vs v]
 breed [entrances entrance]
 
-vs-own [
-  destination ; the attraction the turtle is heading to
-  next-destination
-  isWaiting ; boolean indicating if the turtle is waiting in a queue
-  waitTime ; how long the turtle has been waiting
-  path
-]
 
 
 attractions-own [
@@ -29,6 +22,8 @@ attractions-own [
 
 entrances-own [
   name
+  visited
+  predecessor
   visited
   predecessor
 ]
@@ -165,65 +160,6 @@ to attraction-create-links
 
 end
 
-
-to move-visitors
-  ask vs [
-    ifelse isWaiting [
-      ; If the visitor is waiting, no need to move
-      ; The update-queues procedure will handle their progression
-
-    ] [
-      ; The visitor is not waiting and should move towards the next destination.
-      if not empty? path [
-        
-        let next-dest-name first path 
-        
-        if next-dest-name = "Entrance"[
-          set path but-first path
-          set next-dest-name first path 
-        ]
-  
-        
-        let next-dest one-of attractions with [attraction-name = next-dest-name]
-
-
-        if next-dest != nobody [
-          face next-dest
-          fd 1 ; Adjust speed if necessary. Consider using a variable for flexibility.
-          if distance next-dest < 1 [
-    
-            ; The visitor has arrived at the destination.
-            set destination next-dest-name
-            set path but-first path
-      
-            ifelse length path = 0 [
-   
-              ; Join the queue if there's a wait.
-              ask next-dest [ 
-                if not member? myself queue [
-                  set queue lput myself queue
-                  set waiting-count length queue
-                ]
-              ]
-              set isWaiting true
-              
-            ] [
-              ; If no waiting, move towards the next destination in the path, if any.
-              if not empty? path [
-                 
-                let new-dest-name first path
-                set destination one-of attractions with [attraction-name = new-dest-name]
-              ]
-       
-            ]
-          ]
-        ]
-      ]
-    
-    ]
-  ]
-end
- 
 to update-queues
   ask attractions [
      
@@ -231,36 +167,25 @@ to update-queues
       ; Increment wait time for the first visitor in the queue
       ask first queue [ set waitTime waitTime + 1 ]
       ; Check if the first visitor in the queue has waited long enough
-      let update-visitor first queue
+   
+
       ask first queue [
+    
         if waitTime >= [service-rate] of myself [
           ; This visitor is done; remove them from the queue
           ask myself [
             set queue but-first queue
             set waiting-count length queue
           ]
+  
           ; Reset visitor's state
- 
-          set next-destination one-of (other attractions) ; Choose a new destination
-          update-visitor-dest update-visitor
-          
+          set isWaiting false
+          set waitTime 0
+          set decision-made? false
         ]
       ]
     ]
    
-  ]
-end
-
-to update-visitor-dest [update-visitor]
-  ask update-visitor[
-    set isWaiting false
-    set waitTime 0
-    let next-destination-name ""
-    ask next-destination[
-      set next-destination-name attraction-name
-    ]
-    set path find-path-bfs destination next-destination-name
-
   ]
 end
 
@@ -271,94 +196,7 @@ to update-attraction-labels
     set label (word waiting-count "\n" attraction-name)
   ]
 end
-
-
-to create-visitor [number]
-  repeat number [
-    create-vs 1 [
-      setxy 0 -28
-      set shape "person"
-      set color red
-      set size 4
-      ; Find and set an actual turtle as the destination
-      set isWaiting false 
-      set waitTime 0 
-      set path find-path-bfs "Entrance" "Glide"
-    ]
-  ]
-
-end
-
-to-report find-path-bfs [start-attraction-name target-attraction-name]
-  ask attractions [ set visited false set predecessor nobody ] ;; Reset all attractions' visited attribute
-
-  let start-attraction one-of attractions with [attraction-name = start-attraction-name]
-  if start-attraction = nobody [
-    set start-attraction one-of entrances with [name = start-attraction-name]
-    if start-attraction = nobody [
-      print (word "Start attraction " start-attraction-name " not found.")
-      report []
-    ]
-  ]
-  
-  let target-attraction one-of attractions with [attraction-name = target-attraction-name]
-  if target-attraction = nobody [
-    print (word "Target attraction " target-attraction-name " not found.")
-    report []
-  ]
-  
-
-  
-  ask start-attraction [ set visited true ]
-  
-  let q (list start-attraction)
-  let found? false
-  
-  while [not empty? q and not found?] [
-    let current first q
-    set q butfirst q
-    
-    if current = target-attraction [
-      set found? true
-    ]
-    
-    ask current [
-      ask link-neighbors with [not visited] [
-        set visited true
-        set predecessor current
-        set q lput self q
-      ]
-    ]
-  ]
-  
-  if found? [
-    let p (list target-attraction-name)
-    let current target-attraction
-
-    while [[predecessor] of current != nobody] [
-      set current [predecessor] of current
-      ; Assuming you are in a context where 'current' refers to an agent that could be either an entrance or an attraction
-      let currentname ""
-      ifelse [breed] of current = attractions [
-        ; Handle the case for attractions
-        set currentname [attraction-name] of current  ; Use 'attraction-name' for attractions
-      ] [
-        ; Handle the case for entrances or any other breed
-        if [breed] of current = entrances [
-          set currentname [name] of current  ; Use 'name' for entrances
-        ]
-      ]
-
-   
-      set p fput (currentname) p
-    ]
-    report p
-  ]
-  
-  report []
-end
-
-
+ 
 
 
 

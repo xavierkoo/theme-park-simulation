@@ -1,4 +1,4 @@
-__includes ["modules/attractions.nls" "modules/visitors.nls" "modules/spawning.nls" "modules/clown.nls"]
+__includes ["modules/attractions.nls" "modules/visitors.nls" "modules/spawning.nls" "modules/clown.nls" "modules/bfs.nls"]
 
 ; Setup the environment
 globals [
@@ -10,15 +10,16 @@ globals [
 to setup
   clear-all
   create-clown-face
-  spawning-visitor-mix
-  resize-world -35 35 -35 35 ; 121x121 grid
-  set-patch-size 10 ; For visibility
-  set-default-shape turtles "square"  ; Default shape for rides
   attraction-create-rides
   attraction-create-activities
   attraction-create-entrance
   attraction-create-links
+  spawning-visitor-mix
+  resize-world -35 35 -35 35 ; 121x121 grid
+  set-patch-size 10 ; For visibility
+  set-default-shape turtles "square"  ; Default shape for rides
   reset-ticks
+
 end
 
 ; Main simulation loop
@@ -35,17 +36,16 @@ to go
     visitor-update-satisfaction
     visitor-check-leaving-conditions
   ]
-  move-visitors
   update-queues
-    update-attraction-labels ; Call a new procedure to update labels
+  update-attraction-labels ; Call a new procedure to update labels
 
   tick
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
-210
+431
 10
-928
+1149
 729
 -1
 -1
@@ -95,7 +95,7 @@ fanatic-prob
 fanatic-prob
 0
 100
-30.0
+24.0
 1
 1
 NIL
@@ -125,7 +125,7 @@ average-prob
 average-prob
 0
 100
-50.0
+49.0
 1
 1
 NIL
@@ -155,7 +155,7 @@ passive-prob
 passive-prob
 0
 100
-60.0
+59.0
 1
 1
 NIL
@@ -170,7 +170,7 @@ priority-pass-limit
 priority-pass-limit
 0
 100
-3.0
+35.0
 1
 1
 NIL

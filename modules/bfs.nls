@@ -1,0 +1,71 @@
+to-report find-path-bfs [start-attraction-name target-attraction-name]
+  ask attractions [ set visited false set predecessor nobody ] ; Reset all attractions' visited attribute
+  ask entrances [ set visited false set predecessor nobody ] ; Reset all attractions' visited attribute
+;  print(start-attraction-name)
+
+  let start-attraction one-of attractions with [attraction-name = start-attraction-name]
+  if start-attraction = nobody [
+    set start-attraction one-of entrances with [name = start-attraction-name]
+    if start-attraction = nobody [
+      print (word "Start attraction " start-attraction-name " not found.")
+      report []
+    ]
+  ]
+  
+  let target-attraction one-of attractions with [attraction-name = target-attraction-name]
+  if target-attraction = nobody [
+    set target-attraction one-of entrances with [name = target-attraction-name]
+    if target-attraction = nobody [
+    print (word "Target attraction " target-attraction-name " not found.")
+      report []
+    ]
+  ]
+ 
+  ask start-attraction [ set visited true ]
+  
+  let q (list start-attraction)
+  let found? false
+  
+  while [not empty? q and not found?] [
+    let current first q
+    set q butfirst q
+    
+    if current = target-attraction [
+      set found? true
+    ]
+    
+    ask current [
+      ask link-neighbors with [not visited] [
+        set visited true
+        set predecessor current
+        set q lput self q
+      ]
+    ]
+  ]
+  
+  if found? [
+    let p (list target-attraction-name)
+    let current target-attraction
+
+    while [[predecessor] of current != nobody] [
+      set current [predecessor] of current
+      ; Assuming you are in a context where 'current' refers to an agent that could be either an entrance or an attraction
+      let currentname ""
+      ifelse [breed] of current = attractions [
+        ; Handle the case for attractions
+        set currentname [attraction-name] of current  ; Use 'attraction-name' for attractions
+      ] [
+        ; Handle the case for entrances or any other breed
+        if [breed] of current = entrances [
+          set currentname [name] of current  ; Use 'name' for entrances
+        ]
+      ]
+      set p fput (currentname) p
+    ]
+
+    report p
+
+  ]
+  
+  report []
+end

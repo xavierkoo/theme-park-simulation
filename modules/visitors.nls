@@ -14,8 +14,16 @@ visitors-own [
   priority-pass-usage-limit ; value 1-99(unlimited) max number of pass a visitor can get in a visit
   current-queue ; gpt ??
   attraction-pref ; 0.0-1.0 indicates visitors pref for rides of activities (larger number pref for rides)
-  destination ; where the visitor is currently headed to
+   ; where the visitor is currently headed to
   decision-made? ; boolean, true if the visitor has made a decision on where to go next
+  
+  
+  current-location ; (Attraction Agent)
+  current-location-name; (Attraction Name)
+  next-destination ; (Attraction Agent) where the visitor is currently headed to
+  isWaiting ; boolean indicating if the turtle is waiting in a queue
+  waitTime ; how long the turtle has been waiting
+  path
 ]
 
 to visitor-make-decisions
@@ -65,10 +73,40 @@ to visitor-make-decisions
         ifelse chosen-ride-index != -1 [
           let chosen-ride item chosen-ride-index local-rides
           let chosen-ride-position item chosen-ride-index rides-positions
-          set destination one-of attractions with [attraction-name = chosen-ride]
+          set next-destination one-of attractions with [attraction-name = chosen-ride]
+
+          let currentname ""
+          ifelse [breed] of current-location = attractions [
+            ; Handle the case for attractions
+            set currentname [attraction-name] of current-location  ; Use 'attraction-name' for attractions
+          ] [
+            ; Handle the case for entrances or any other breed
+            if [breed] of current-location = entrances [
+              set currentname [name] of current-location  ; Use 'name' for entrances
+            ]
+          ]
+          let next-destination-name ""
+          ask next-destination[
+            set next-destination-name attraction-name
+          ]
+          set path find-path-bfs currentname next-destination-name
+      
         ] [
           ; If no activity is chosen, set destination to the entrance
-          set destination one-of turtles with [shape = "house" and label = "Entrance"]
+          set next-destination one-of turtles with [label = "\nEntrance"]
+          let currentname ""
+          ifelse [breed] of current-location = attractions [
+            ; Handle the case for attractions
+            set currentname [attraction-name] of current-location  ; Use 'attraction-name' for attractions
+          ] [
+            ; Handle the case for entrances or any other breed
+            if [breed] of current-location = entrances [
+     
+                set currentname [name] of current-location  ; Use 'name' for entrances
+            ]
+          ]
+          let next-destination-name [name] of next-destination  ; Use 'name' for entrances
+          set path find-path-bfs currentname next-destination-name
         ]
       ]
       ; activity chosen
@@ -83,10 +121,41 @@ to visitor-make-decisions
         ifelse chosen-activity-index != FALSE and chosen-activity-index >= 0 and chosen-activity-index < length local-activities [
           let chosen-activity item chosen-activity-index local-activities
           let chosen-activity-position item chosen-activity-index activities-positions
-          set destination one-of attractions with [attraction-name = chosen-activity]
+          set next-destination one-of attractions with [attraction-name = chosen-activity]
+      
+          let currentname ""
+          ifelse [breed] of current-location = attractions [
+            ; Handle the case for attractions
+            set currentname [attraction-name] of current-location  ; Use 'attraction-name' for attractions
+          ] [
+            ; Handle the case for entrances or any other breed
+            if [breed] of current-location = entrances [
+              set currentname [name] of current-location  ; Use 'name' for entrances
+            ]
+          ]
+          let next-destination-name ""
+          ask next-destination[
+            set next-destination-name attraction-name
+          ]
+          set path find-path-bfs currentname next-destination-name
+     
+          
         ] [
           ; If no activity is chosen, set destination to the entrance
-          set destination one-of turtles with [shape = "house" and label = "Entrance"]
+          set next-destination one-of turtles with [label = "\nEntrance"]
+          let currentname ""
+          ifelse [breed] of current-location = attractions [
+            ; Handle the case for attractions
+            set currentname [attraction-name] of current-location  ; Use 'attraction-name' for attractions
+          ] [
+            ; Handle the case for entrances or any other breed
+            if [breed] of current-location = entrances [
+                set currentname [name] of current-location  ; Use 'name' for entrances
+            ]
+          ]
+          let next-destination-name [name] of next-destination  ; Use 'name' for entrances
+          set path find-path-bfs currentname next-destination-name
+       
         ]
       ]
       ; At the end of the decision-making process, set the flag to true
@@ -99,18 +168,68 @@ end
 ; Move towards the selected attraction
 to visitor-move-to-attraction
   ; Check if the visitor has a destination
-  if destination != nobody [
-    ; Face the destination
-    face destination
-    ; Move towards the destination
-    fd 1 ; Move forward by 1 step, adjust the step size as necessary
-    ; Check if the visitor has arrived
-    if distance destination <= 1 [ ; assuming a threshold of 1 unit for arrival
-      ; Arrived at the destination
-      set decision-made? false
+    ask visitors [
+    ifelse isWaiting [
+      ; If the visitor is waiting, no need to move
+      ; The update-queues procedure will handle their progression
+
+    ] [
+      ; The visitor is not waiting and should move towards the next destination.
+      if not empty? path [
+        let next-dest-name first path 
+
+        let next-dest one-of attractions with [attraction-name = next-dest-name]
+        if next-dest = nobody [
+          set next-dest one-of entrances with [name = next-dest-name]
+          if next-dest = nobody [
+            print (word "next-dest-name " next-dest-name " not found.")
+ 
+          ]
+        ]
+
+        if next-dest != nobody [
+          face next-dest
+          fd 1 ; Adjust speed if necessary. Consider using a variable for flexibility.
+          if distance next-dest < 1 [
+            ; The visitor has arrived at the destination.
+            set current-location-name next-dest-name
+            set path but-first path 
+            if length path = 0 and [breed] of next-dest = entrances[     
+                set decision-made? false
+            ]
+      
+            ifelse length path = 0 and [breed] of next-dest != entrances[
+              ; Join the queue if there's a wait.
+              ask next-dest [ 
+                if not member? myself queue  [
+                  set queue lput myself queue
+                  set waiting-count length queue
+                
+                ]
+              ]
+              set isWaiting true
+            ] [
+              ; If no waiting, move towards the next destination in the path, if any.
+              if not empty? path [
+                let new-dest-name first path
+                set current-location one-of attractions with [attraction-name = next-dest-name]
+                if current-location = nobody [
+                  set current-location one-of entrances with [name = next-dest-name]
+                  if current-location = nobody [
+                    print (word "current-location" current-location " not found.")
+                    
+                  ]
+                ]
+              ]
+            ]
+          ]
+        ]
+      ]
     ]
   ]
 end
+
+
 
 
 ; Check the queue of the attraction and decide whether to stay 
@@ -132,3 +251,4 @@ end  
 to visitor-check-leaving-conditions 
   ; Implement logic based on satisfaction level and staying time 
 end 
+
