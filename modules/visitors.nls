@@ -74,39 +74,12 @@ to visitor-make-decisions
           let chosen-ride item chosen-ride-index local-rides
           let chosen-ride-position item chosen-ride-index rides-positions
           set next-destination one-of attractions with [attraction-name = chosen-ride]
-
-          let currentname ""
-          ifelse [breed] of current-location = attractions [
-            ; Handle the case for attractions
-            set currentname [attraction-name] of current-location  ; Use 'attraction-name' for attractions
-          ] [
-            ; Handle the case for entrances or any other breed
-            if [breed] of current-location = entrances [
-              set currentname [name] of current-location  ; Use 'name' for entrances
-            ]
-          ]
-          let next-destination-name ""
-          ask next-destination[
-            set next-destination-name attraction-name
-          ]
-          set path find-path-bfs currentname next-destination-name
+          visitor-create-path
       
         ] [
           ; If no activity is chosen, set destination to the entrance
           set next-destination one-of turtles with [label = "\nEntrance"]
-          let currentname ""
-          ifelse [breed] of current-location = attractions [
-            ; Handle the case for attractions
-            set currentname [attraction-name] of current-location  ; Use 'attraction-name' for attractions
-          ] [
-            ; Handle the case for entrances or any other breed
-            if [breed] of current-location = entrances [
-     
-                set currentname [name] of current-location  ; Use 'name' for entrances
-            ]
-          ]
-          let next-destination-name [name] of next-destination  ; Use 'name' for entrances
-          set path find-path-bfs currentname next-destination-name
+          visitor-create-path
         ]
       ]
       ; activity chosen
@@ -122,40 +95,12 @@ to visitor-make-decisions
           let chosen-activity item chosen-activity-index local-activities
           let chosen-activity-position item chosen-activity-index activities-positions
           set next-destination one-of attractions with [attraction-name = chosen-activity]
-      
-          let currentname ""
-          ifelse [breed] of current-location = attractions [
-            ; Handle the case for attractions
-            set currentname [attraction-name] of current-location  ; Use 'attraction-name' for attractions
-          ] [
-            ; Handle the case for entrances or any other breed
-            if [breed] of current-location = entrances [
-              set currentname [name] of current-location  ; Use 'name' for entrances
-            ]
-          ]
-          let next-destination-name ""
-          ask next-destination[
-            set next-destination-name attraction-name
-          ]
-          set path find-path-bfs currentname next-destination-name
-     
-          
+          visitor-create-path
+
         ] [
           ; If no activity is chosen, set destination to the entrance
           set next-destination one-of turtles with [label = "\nEntrance"]
-          let currentname ""
-          ifelse [breed] of current-location = attractions [
-            ; Handle the case for attractions
-            set currentname [attraction-name] of current-location  ; Use 'attraction-name' for attractions
-          ] [
-            ; Handle the case for entrances or any other breed
-            if [breed] of current-location = entrances [
-                set currentname [name] of current-location  ; Use 'name' for entrances
-            ]
-          ]
-          let next-destination-name [name] of next-destination  ; Use 'name' for entrances
-          set path find-path-bfs currentname next-destination-name
-       
+          visitor-create-path
         ]
       ]
       ; At the end of the decision-making process, set the flag to true
@@ -228,6 +173,32 @@ to visitor-move-to-attraction
     ]
   ]
 end
+
+to visitor-create-path 
+  let currentname ""
+  ifelse [breed] of current-location = attractions [
+    ; Handle the case for attractions
+    set currentname [attraction-name] of current-location  ; Use 'attraction-name' for attractions
+  ] [
+    ; Handle the case for entrances or any other breed
+    if [breed] of current-location = entrances [
+      set currentname [name] of current-location  ; Use 'name' for entrances
+    ]
+  ]
+  let next-destination-name ""
+  ifelse [breed] of next-destination = attractions [
+    ; Handle the case for attractions
+    set next-destination-name [attraction-name] of next-destination  ; Use 'attraction-name' for attractions
+  ] [
+    ; Handle the case for entrances or any other breed
+    if [breed] of next-destination = entrances [
+      set next-destination-name [name] of next-destination  ; Use 'name' for entrances
+    ]
+  ]
+  set path find-path-bfs currentname next-destination-name
+  
+end
+
 
 
 
