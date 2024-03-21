@@ -1,4 +1,13 @@
+globals [paths-map]
+
 to-report find-path-bfs [start-attraction-name target-attraction-name]
+  let existing-path find-path start-attraction-name target-attraction-name
+  if existing-path != false [
+    report existing-path  ; Path already exists, so report it
+  ]
+  
+  ; If the path doesn't exist, proceed with BFS search
+
   ask attractions [ set visited false set predecessor nobody ] ; Reset all attractions' visited attribute
   ask entrances [ set visited false set predecessor nobody ] ; Reset all attractions' visited attribute
 ;  print(start-attraction-name)
@@ -62,10 +71,32 @@ to-report find-path-bfs [start-attraction-name target-attraction-name]
       ]
       set p fput (currentname) p
     ]
-
+    ; After finding the path...
+    add-path start-attraction-name target-attraction-name p
     report p
 
   ]
   
   report []
+end
+
+to add-path [start-attraction-name target-attraction-name new-path]
+  ; Check if the path already exists
+  let existing-path find-path start-attraction-name target-attraction-name
+  if existing-path = false [
+    ; Add the new path as a list of [start-target, path]
+    set paths-map lput (list (word start-attraction-name "-" target-attraction-name) new-path) paths-map
+  ]
+end
+
+
+to-report find-path [start-attraction-name target-attraction-name]
+  let key (word start-attraction-name "-" target-attraction-name)
+  foreach paths-map [
+    [path-pair] ->
+    if first path-pair = key [
+      report last path-pair
+    ]
+  ]
+  report false  ; Return false if the path is not found
 end

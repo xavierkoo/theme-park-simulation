@@ -18,6 +18,7 @@ to setup
   resize-world -35 35 -35 35 ; 121x121 grid
   set-patch-size 10 ; For visibility
   set-default-shape turtles "square"  ; Default shape for rides
+  set paths-map []
   reset-ticks
 
 end
