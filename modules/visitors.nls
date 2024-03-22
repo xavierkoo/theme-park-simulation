@@ -233,7 +233,6 @@ to visitor-check-queue
     ; Compare queue length with visitor's patience level
     ifelse queue-length > patience-level [
       ; If queue is longer than patience level, decide not to join and make a new decision
-      print (word "Queue too long at " [attraction-name] of next-destination ". Looking for alternatives.")
       set decision-made? false
     ] [
       ; If queue is within patience level, join the queue
@@ -241,7 +240,6 @@ to visitor-check-queue
         set queue lput myself queue
       ]
       set isWaiting true
-      print (word "Joining queue at " [attraction-name] of next-destination ".")
     ]
   ]
 end
