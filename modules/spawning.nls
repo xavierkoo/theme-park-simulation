@@ -68,13 +68,14 @@ to spawning-visitors [number-of-visitors]
     set priority-pass-usage-limit priority-pass-limit
     set satisfaction-level 100 ; initial satisfaction level
     set archetype determine-archetype
+    set visited-attractions [] ; initialise the list
     
     ; Assign visitor properties that are affected by archetype
     ifelse archetype = "Ride Fanatic" [
       ; Ride Fanatic
       set color violet
-      set patience-level random 10 ; Ride Fanatics have high queue patience
-      set expected-attractions-rate random 8 + 5 ; Ride Fanatics expect to visit more attractions
+      set patience-level 320 + random 20 ; Ride Fanatics have high queue patience
+      set expected-attractions-rate random 120 + 20 ; Ride Fanatics expect to visit more attractions
       set staying-time random-normal 10 2 ; Ride Fanatics tend to spend the most time
       set repeat-ride? one-of [true true true true] ; Ride Fanatics absolutely likely to repeat rides
       set attraction-pref 0.7 ; Ride Fanatics have a high preference for rides
@@ -83,7 +84,7 @@ to spawning-visitors [number-of-visitors]
       ifelse archetype = "Ride Enthusiast" [
         ; Ride Enthusiast
         set color red
-        set patience-level random 8 ; Ride Enthusiasts have moderate queue patience
+        set patience-level 300 + random 20 ; Ride Enthusiasts have moderate queue patience
         set expected-attractions-rate random 7 + 4 ; Ride Enthusiasts expect to visit moderate attractions
         set staying-time random-normal 9 2 ; Ride Enthusiasts spend more time
         set repeat-ride? one-of [true true true false] ; Ride Enthusiasts likely to repeat rides
@@ -93,7 +94,7 @@ to spawning-visitors [number-of-visitors]
         ifelse archetype = "Average Visitor" [
           ; Average Visitor
           set color pink
-          set patience-level random 7 ; Average Visitors have reasonable queue patience
+          set patience-level 280 + random 20 ; Average Visitors have reasonable queue patience
           set expected-attractions-rate random 6 + 3 ; Average Visitors expect to visit fewer attractions
           set staying-time random-normal 8 2 ; Average Visitors spend average time
           set repeat-ride? one-of [true true false false] ; Average Visitors may or may not repeat rides
@@ -103,7 +104,7 @@ to spawning-visitors [number-of-visitors]
           ifelse archetype = "Leisure Enjoyer" [
             ; Leisure Enjoyer
             set color white
-            set patience-level random 5 ; Leisure Enjoyers have low queue patience
+            set patience-level 260 + random 20 ; Leisure Enjoyers have low queue patience
             set expected-attractions-rate random 5 + 2 ; Leisure Enjoyers expect to visit very few attractions
             set staying-time random-normal 7 2 ; Leisure Enjoyers tend to spend less time
             set repeat-ride? one-of [true false false false] ; Leisure Enjoyers rarely repeat rides
@@ -113,7 +114,7 @@ to spawning-visitors [number-of-visitors]
             ifelse archetype = "Passive Sightseer" [
               ; Passive Sightseer
               set color cyan
-              set patience-level random 6 ; Passive Sightseers have somewhat reasonable queue patience
+              set patience-level 240 + random 20 ; Passive Sightseers have somewhat reasonable queue patience
               set expected-attractions-rate random 5 + 3 ; Passive Sightseers expect to visit few attractions
               set staying-time random-normal 8 2 ; Passive Sightseers tend to spend average time
               set repeat-ride? one-of [false false false false] ; Passive Sightseers do not repeat rides
@@ -122,7 +123,7 @@ to spawning-visitors [number-of-visitors]
             ] [
               ; null (follows Average Visitor)
               set color gray
-              set patience-level random 7
+              set patience-level 280 + random 20
               set expected-attractions-rate random 6 + 3
               set staying-time random-normal 8 2
               set repeat-ride? one-of [true true false false]

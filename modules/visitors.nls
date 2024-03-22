@@ -11,10 +11,10 @@ visitors-own [
   expected-attractions-rate ; number of attractions visitors expects to take part in by the end of the day influenced by archetype
   staying-time ; duration of visitors staying in the park.
   repeat-ride? ; boolean, whether visitor repeats the ride
+  visited-attractions ; list of visited attractions
   priority-pass-usage-limit ; value 1-99(unlimited) max number of pass a visitor can get in a visit
   current-queue ; gpt ??
   attraction-pref ; 0.0-1.0 indicates visitors pref for rides of activities (larger number pref for rides)
-   ; where the visitor is currently headed to
   decision-made? ; boolean, true if the visitor has made a decision on where to go next
   
   
@@ -73,8 +73,18 @@ to visitor-make-decisions
         ifelse chosen-ride-index != -1 [
           let chosen-ride item chosen-ride-index local-rides
           let chosen-ride-position item chosen-ride-index rides-positions
-          set next-destination one-of attractions with [attraction-name = chosen-ride]
-          visitor-create-path
+          ifelse repeat-ride? and member? chosen-ride visited-attractions [
+            ; Logic to handle repeating a ride
+            set next-destination one-of attractions with [attraction-name = chosen-ride]
+            visitor-create-path
+          ] [
+            ; If not repeating or haven't visited this ride before, proceed normally
+            if not member? chosen-ride visited-attractions [
+              set visited-attractions lput chosen-ride visited-attractions
+              set next-destination one-of attractions with [attraction-name = chosen-ride]
+              visitor-create-path
+            ]
+          ]
       
         ] [
           ; If no activity is chosen, set destination to the entrance
@@ -94,8 +104,18 @@ to visitor-make-decisions
         ifelse chosen-activity-index != FALSE and chosen-activity-index >= 0 and chosen-activity-index < length local-activities [
           let chosen-activity item chosen-activity-index local-activities
           let chosen-activity-position item chosen-activity-index activities-positions
-          set next-destination one-of attractions with [attraction-name = chosen-activity]
-          visitor-create-path
+          ifelse repeat-ride? and member? chosen-activity visited-attractions [
+            ; Logic to handle repeating a ride
+            set next-destination one-of attractions with [attraction-name = chosen-activity]
+            visitor-create-path
+          ] [
+            ; If not repeating or haven't visited this ride before, proceed normally
+            if not member? chosen-activity visited-attractions [
+              set visited-attractions lput chosen-activity visited-attractions
+              set next-destination one-of attractions with [attraction-name = chosen-activity]
+              visitor-create-path
+            ]
+          ]
 
         ] [
           ; If no activity is chosen, set destination to the entrance
@@ -135,17 +155,24 @@ to visitor-move-to-attraction
           face next-dest
           fd 1 ; Adjust speed if necessary. Consider using a variable for flexibility.
           if distance next-dest < 1 [
+            ; Check the queue and decide whether to join, decision-made? set back to false if queue is longer than visitor patience level
+            visitor-check-queue
+            if not decision-made? [
+              stop ; stops the execution of moving to attraction for the visitor
+            ]
+            
             ; The visitor has arrived at the destination.
             set current-location-name next-dest-name
             set path but-first path 
+           
             if length path = 0 and [breed] of next-dest = entrances[     
                 set decision-made? false
             ]
-      
-            ifelse length path = 0 and [breed] of next-dest != entrances[
+            
+            ifelse length path = 0 and [breed] of next-dest != entrances[ 
               ; Join the queue if there's a wait.
               ask next-dest [ 
-                if not member? myself queue  [
+                if not member? myself queue [
                   set queue lput myself queue
                 ]
               ]
@@ -196,14 +223,29 @@ to visitor-create-path
   
 end
 
-
-
-
-
 ; Check the queue of the attraction and decide whether to stay 
-to visitor-check-queue 
-  ; Implement logic based on patience level and queue length 
-end  
+to visitor-check-queue
+  ; Check if the visitor is currently deciding to join a queue
+  if not isWaiting and [breed] of next-destination != entrances [
+    ; Assess the current destination's queue length
+    let queue-length length [queue] of next-destination
+    
+    ; Compare queue length with visitor's patience level
+    ifelse queue-length > patience-level [
+      ; If queue is longer than patience level, decide not to join and make a new decision
+      print (word "Queue too long at " [attraction-name] of next-destination ". Looking for alternatives.")
+      set decision-made? false
+    ] [
+      ; If queue is within patience level, join the queue
+      ask next-destination [
+        set queue lput myself queue
+      ]
+      set isWaiting true
+      print (word "Joining queue at " [attraction-name] of next-destination ".")
+    ]
+  ]
+end
+
 
 ; Visitor enjoys the attraction and updates state 
 to visitor-enjoy-attraction 
