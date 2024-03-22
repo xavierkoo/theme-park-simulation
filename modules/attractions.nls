@@ -6,24 +6,23 @@ breed [attractions attraction]
 breed [vs v]
 breed [entrances entrance]
 
-
-
 attractions-own [
-  attraction-type ; "ride" or "activity"
-  popularity ; A numeric value indicating its popularity
-  service-rate ; How fast the attraction can serve visitors (e.g., ride duration or activity length)
-  waiting-count ; Number of visitors currently waiting
-  queue ; List of visitors waiting for this attraction
-  attraction-name
-  attraction-popularity ; true is popular
-  visited
-  predecessor
+  attraction-type ; "ride" or "activity". Determines the type of attraction, affecting how visitors interact with it.
+  popularity ; A numeric value indicating its popularity. Higher values may influence visitor preferences or queue lengths.
+  service-rate ; How fast the attraction can serve visitors, e.g., ride duration or activity length. Affects how quickly the queue moves.
+  waiting-count ; Number of visitors currently waiting in the queue for this attraction.
+  queue ; List of visitors waiting for this attraction. Used to manage the order and number of visitors.
+  attraction-name ; The name of the attraction. Used for identification and possibly displayed in the simulation interface.
+  attraction-popularity ; A boolean indicating if the attraction is considered popular (true) or not (false). May affect visitor choice.
+  visited ; A flag (usually true/false) indicating whether an attraction has been visited by a visitor. Useful for tracking visitor movement.
+  predecessor ; Refers to the previous attraction visited by a visitor. Can be used to track visitor paths or for analysis purposes.
+  ride-capacity ; A list of visitors currently on the ride or participating in the activity. Indicates how many visitors are being served.
+  ride-time ; The remaining time for the current ride or activity session to complete. A countdown to when the next group can be served.
+  capacity ; The maximum number of visitors that can be accommodated by the attraction at one time. Influences how many visitors can be moved from the queue to the ride-capacity list.
 ]
 
 entrances-own [
   name
-  visited
-  predecessor
   visited
   predecessor
 ]
@@ -62,16 +61,17 @@ to attraction-create-rides
       set color green
       set label (word "\n" r)
       set label-color white
-      set service-rate 10
+      set service-rate 5 + random (20 - 5)
       set waiting-count 0
       set queue [] ; Initialize the queue as an empty list
+      set ride-capacity [] ; 
+      set capacity 5 + random (20 - 5)
       set attraction-popularity item 2 p
       set visited false
       set predecessor nobody
     ]
   ])
 end
-
 
 ; Procedure to create activities
 to attraction-create-activities
@@ -90,10 +90,11 @@ to attraction-create-activities
       set size 3
       set shape "triangle"
       set color yellow
-      set service-rate 5
+      set service-rate 5 + random (20 - 5)
       set waiting-count 0
       set queue [] ; Initialize the queue as an empty list
-      
+      set ride-capacity [] ; 
+      set capacity 5 + random (20 - 5)
       ; Add newlines to position the label below the turtle and set the label color to white
       set label (word "\n" a)
       set label-color white
@@ -162,30 +163,40 @@ end
 
 to update-queues
   ask attractions [
-     
+    set waiting-count length queue
     if waiting-count > 0 [
-      ; Increment wait time for the first visitor in the queue
+      ; Corrected to increment wait time for the first visitor in the queue
       ask first queue [ set waitTime waitTime + 1 ]
-      ; Check if the first visitor in the queue has waited long enough
-   
+      
+      ; Move visitors from queue to ride-capacity until full or queue is empty
+      while [length ride-capacity < capacity and not empty? queue] [
+        let rider first queue
+        set ride-capacity lput rider ride-capacity
+        set queue but-first queue
+        ; Update the waiting count after removing from queue
+        set waiting-count length queue
+        ask rider [ set isWaiting false set waitTime 0 ] ; Assuming visitors have an isWaiting attribute
+      ]
 
-      ask first queue [
-    
-        if waitTime >= [service-rate] of myself [
-          ; This visitor is done; remove them from the queue
-          ask myself [
-            set queue but-first queue
-            set waiting-count length queue
+      ; Ride processing only if there are visitors on the ride
+      if not empty? ride-capacity [
+        if ride-time > 0 [
+          set ride-time ride-time - 1  ; Decrement the ride time
+        ]
+        if ride-time = 0 [
+          ; Process visitors after the ride is over
+          while [not empty? ride-capacity] [
+            ask first ride-capacity [
+              ; Reset visitor's state here
+              set decision-made? false
+              ; Additional state reset logic as needed
+            ]
+            set ride-capacity but-first ride-capacity
           ]
-  
-          ; Reset visitor's state
-          set isWaiting false
-          set waitTime 0
-          set decision-made? false
+          set ride-time service-rate ; Reset the ride time for the next cycle
         ]
       ]
     ]
-   
   ]
 end
 
@@ -196,12 +207,3 @@ to update-attraction-labels
     set label (word waiting-count "\n" attraction-name)
   ]
 end
- 
-
-
-
-
-
-
-
-

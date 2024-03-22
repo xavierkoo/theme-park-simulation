@@ -128,7 +128,6 @@ to visitor-move-to-attraction
           set next-dest one-of entrances with [name = next-dest-name]
           if next-dest = nobody [
             print (word "next-dest-name " next-dest-name " not found.")
- 
           ]
         ]
 
@@ -148,8 +147,6 @@ to visitor-move-to-attraction
               ask next-dest [ 
                 if not member? myself queue  [
                   set queue lput myself queue
-                  set waiting-count length queue
-                
                 ]
               ]
               set isWaiting true
