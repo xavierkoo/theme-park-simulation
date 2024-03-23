@@ -43,8 +43,8 @@ end
 
 to attraction-create-rides
   let rides ["Thunderbolt" "Carousel" "Aqua" "Skyward" "Flight" "Coaster" "Glide" "Dash" "Voyage" "Tunnel" "Falls" "Safari"]
-  let positions [[-20 -3 true] [-20 20 true] [20 -3 true] [20 20 true] [-20 25 true] [11 -3 false]
-  [0 20 false] [0 25 false] [-28 10 false] [20 10 false] [28 10 false] [20 -8 false]
+  let positions [[-20 -3 true 10 20] [-20 20 true 10 20] [20 -3 true 5 15] [20 20 true 5 15] [-20 25 true 5 10] [11 -3 false 5 10]
+  [0 20 false 10 15] [0 25 false 10 15] [-28 10 false 20 20] [20 10 false 5 20] [28 10 false 5 5] [20 -8 false 5 15]
   ] ; Adjust positions as needed
 
   (foreach rides positions [
@@ -61,11 +61,12 @@ to attraction-create-rides
       set color green
       set label (word "\n" r)
       set label-color white
-      set service-rate 5 + random (20 - 5)
+      set service-rate item 3 p
       set waiting-count 0
       set queue [] ; Initialize the queue as an empty list
       set ride-capacity [] ; 
-      set capacity 5 + random (20 - 5)
+      set ride-time 0
+      set capacity item 4 p
       set attraction-popularity item 2 p
       set visited false
       set predecessor nobody
@@ -76,7 +77,7 @@ end
 ; Procedure to create activities
 to attraction-create-activities
   let activities ["Laser" "Enchanted" "Hunt" "Wizard" "Observatory" "Maze" "Robotics" "Carnival"]
-  let positions [[-12 -8] [28 20] [-28 20] [28 -8] [-20 5] [20 25] [-28 -8] [0 15]]
+  let positions [[-12 -8 5 10] [28 20 5 10] [-28 20 10 20] [28 -8 10 15] [-20 5 10 15] [20 25 5 20] [-28 -8 10 10] [0 15 10 15]]
 
   (foreach activities positions [
     [a p] ->
@@ -90,11 +91,12 @@ to attraction-create-activities
       set size 3
       set shape "triangle"
       set color yellow
-      set service-rate 5 + random (20 - 5)
+      set service-rate item 2 p
       set waiting-count 0
       set queue [] ; Initialize the queue as an empty list
       set ride-capacity [] ; 
-      set capacity 5 + random (20 - 5)
+      set ride-time 0
+      set capacity item 3 p
       ; Add newlines to position the label below the turtle and set the label color to white
       set label (word "\n" a)
       set label-color white
@@ -174,6 +176,7 @@ to update-queues
         set ride-capacity lput rider ride-capacity
         set queue but-first queue
         ; Update the waiting count after removing from queue
+
         set waiting-count length queue
         ask rider [ set isWaiting false set waitTime 0 ] ; Assuming visitors have an isWaiting attribute
       ]
