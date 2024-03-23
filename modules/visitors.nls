@@ -155,8 +155,12 @@ to visitor-move-to-attraction
           face next-dest
           fd 1 ; Adjust speed if necessary. Consider using a variable for flexibility.
           if distance next-dest < 1 [
+            
             ; Check the queue and decide whether to join, decision-made? set back to false if queue is longer than visitor patience level
-            visitor-check-queue
+            if [breed] of next-dest != entrances [
+              visitor-check-queue
+            ]
+            
             if not decision-made? [
               stop ; stops the execution of moving to attraction for the visitor
             ]
