@@ -61,6 +61,8 @@ to spawning-visitors [number-of-visitors]
     set isWaiting false
     set waitTime 0
     set decision-made? false
+    set moving false
+    set next-dest-name ""
     set current-location one-of turtles with [label = "\nEntrance"]
 ;    if target != nobody [ move-to target ] ; move to Entrance
     
@@ -139,7 +141,9 @@ end
 
 ; Determine number of visitors to spawn on current tick
 to spawning-visitors-now
-  let current-mean item (floor (ticks / 100)) arrival-means
-  let value random-poisson current-mean
-  spawning-visitors value
+  if ticks < closing-time[
+    let current-mean item (floor (ticks / 100)) arrival-means
+    let value random-poisson current-mean
+    spawning-visitors value
+  ]
 end

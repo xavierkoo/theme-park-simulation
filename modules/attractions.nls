@@ -1,7 +1,3 @@
-globals [
-  
-]
-
 breed [attractions attraction]
 breed [vs v]
 breed [entrances entrance]
@@ -65,7 +61,7 @@ to attraction-create-rides
       set waiting-count 0
       set queue [] ; Initialize the queue as an empty list
       set ride-capacity [] ; 
-      set ride-time 0
+      set ride-time -1
       set capacity item 4 p
       set attraction-popularity item 2 p
       set visited false
@@ -95,7 +91,7 @@ to attraction-create-activities
       set waiting-count 0
       set queue [] ; Initialize the queue as an empty list
       set ride-capacity [] ; 
-      set ride-time 0
+      set ride-time -1
       set capacity item 3 p
       ; Add newlines to position the label below the turtle and set the label color to white
       set label (word "\n" a)
@@ -165,48 +161,54 @@ end
 
 to update-queues
   ask attractions [
-    set waiting-count length queue
-    if waiting-count > 0 [
-      ; Corrected to increment wait time for the first visitor in the queue
-      ask first queue [ set waitTime waitTime + 1 ]
-      
+ 
+    if length queue > 0 [
+      ; Corrected to increment wait time for the last visitor in the queue
       ; Move visitors from queue to ride-capacity until full or queue is empty
-      while [length ride-capacity < capacity and not empty? queue] [
+      while [length ride-capacity < capacity and not empty? queue and ride-time = -1] [
         let rider first queue
         set ride-capacity lput rider ride-capacity
         set queue but-first queue
         ; Update the waiting count after removing from queue
-
         set waiting-count length queue
-        ask rider [ set isWaiting false set waitTime 0 ] ; Assuming visitors have an isWaiting attribute
+;        ask rider [ set isWaiting false set waitTime 0 ] ; Assuming visitors have an isWaiting attribute
       ]
-
       ; Ride processing only if there are visitors on the ride
-      if not empty? ride-capacity [
-        if ride-time > 0 [
-          set ride-time ride-time - 1  ; Decrement the ride time
-        ]
-        if ride-time = 0 [
-          ; Process visitors after the ride is over
-          while [not empty? ride-capacity] [
-            ask first ride-capacity [
-              ; Reset visitor's state here
-              set decision-made? false
-              ; Additional state reset logic as needed
-            ]
-            set ride-capacity but-first ride-capacity
+    ]
+          
+    if not empty? ride-capacity  [
+      if ride-time = -1 [
+        set ride-time service-rate ; Reset the ride time for the next cycle
+      ]
+      if ride-time > 0 [
+        set ride-time ride-time - 1  ; Decrement the ride time
+      ]
+      if ride-time = 0 [
+        ; Process visitors after the ride is over
+        while [not empty? ride-capacity] [
+          ask first ride-capacity [
+            ; Reset visitor's state here
+            set isWaiting false 
+            set waitTime 0
+            set decision-made? false
+            ; Additional state reset logic as needed
           ]
-          set ride-time service-rate ; Reset the ride time for the next cycle
+          set ride-capacity but-first ride-capacity
         ]
+        set ride-time -1 ; Reset the ride time for the next cycle
       ]
     ]
   ]
 end
 
 to update-attraction-labels
+;  ask visitors [
+;    print(path)
+;  ]
   ask attractions [
     ; Assuming 'label' initially contains just the name of the attraction
     ; and 'waiting-count' is the attribute you've added
-    set label (word waiting-count "\n" attraction-name)
+    set label (word length queue "\n" attraction-name)
   ]
+
 end

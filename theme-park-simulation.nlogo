@@ -19,6 +19,7 @@ to setup
   set-patch-size 10 ; For visibility
   set-default-shape turtles "square"  ; Default shape for rides
   set paths-map []
+
   reset-ticks
 
 end
@@ -32,6 +33,7 @@ to go
     ] [
       visitor-make-decisions
     ]
+
 ;    visitor-enjoy-attraction
 ;    visitor-update-satisfaction
 ;    visitor-check-leaving-conditions
@@ -95,7 +97,7 @@ fanatic-prob
 fanatic-prob
 0
 100
-24.0
+32.0
 1
 1
 NIL
@@ -125,7 +127,7 @@ average-prob
 average-prob
 0
 100
-49.0
+89.0
 1
 1
 NIL
@@ -155,7 +157,7 @@ passive-prob
 passive-prob
 0
 100
-59.0
+92.0
 1
 1
 NIL
@@ -170,7 +172,7 @@ priority-pass-limit
 priority-pass-limit
 0
 100
-35.0
+90.0
 1
 1
 NIL
@@ -226,6 +228,21 @@ count visitors
 17
 1
 11
+
+SLIDER
+172
+377
+344
+410
+closing-time
+closing-time
+50
+10000
+50.0
+50
+1
+NIL
+HORIZONTAL
 
 @#$#@#$#@
 ## WHAT IS IT?
