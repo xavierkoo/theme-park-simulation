@@ -1,5 +1,4 @@
 breed [attractions attraction]
-breed [vs v]
 breed [entrances entrance]
 
 attractions-own [
@@ -40,8 +39,7 @@ end
 to attraction-create-rides
   let rides ["Thunderbolt" "Carousel" "Aqua" "Skyward" "Flight" "Coaster" "Glide" "Dash" "Voyage" "Tunnel" "Falls" "Safari"]
   let positions [[-20 -3 true 10 20] [-20 20 true 10 20] [20 -3 true 5 15] [20 20 true 5 15] [-20 25 true 5 10] [11 -3 false 5 10]
-  [0 20 false 10 15] [0 25 false 10 15] [-28 10 false 20 20] [20 10 false 5 20] [28 10 false 5 5] [20 -8 false 5 15]
-  ] ; Adjust positions as needed
+  [0 20 false 10 15] [0 25 false 10 15] [-28 10 false 20 20] [20 10 false 5 20] [28 10 false 5 5] [20 -8 false 5 15]]
 
   (foreach rides positions [
     [r p] ->

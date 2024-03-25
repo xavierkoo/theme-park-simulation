@@ -2,6 +2,7 @@ __includes ["modules/attractions.nls" "modules/visitors.nls" "modules/spawning.n
 
 ; Setup the environment
 globals [
+
   priority-pass-threshold; number of ticks, once threshold is reached priority pass(pp) will be enabled for the attractions
 ]
 

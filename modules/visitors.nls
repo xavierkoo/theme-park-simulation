@@ -31,6 +31,14 @@ visitors-own [
 
 to visitor-make-decisions
   ask visitors [
+    if ticks > closing-time [
+      set next-destination one-of turtles with [label = "\nEntrance"]
+      visitor-create-path
+      set decision-made? true
+      set going-home? true
+      stop
+    ]
+
     if not decision-made? [
       ; Get current location of the visitor
       let current-xcor xcor
@@ -43,15 +51,6 @@ to visitor-make-decisions
       let local-rides ["Thunderbolt" "Carousel" "Aqua" "Skyward" "Flight" "Coaster" "Glide" "Dash" "Voyage" "Tunnel" "Falls" "Safari"]
       let rides-positions [[-20 -8 true] [-20 20 true] [20 -8 true] [20 20 true] [-20 25 false] [11 -8 false]
       [0 20 false] [0 25 false] [-13 5 false] [20 5 false] [28 5 false] [20 -15 false]]
-      
-
-      if ticks > closing-time [
-        set next-destination one-of turtles with [label = "\nEntrance"]
-        visitor-create-path
-        set decision-made? true
-        set going-home? true
-        stop
-      ]
       
       ; Check if the visitor's satisfaction level is below the threshold
       if satisfaction-level < 50 [
@@ -146,7 +145,6 @@ to visitor-make-decisions
         ]
       ]
       ; At the end of the decision-making process, set the flag to true
-   
       set decision-made? true
     ]
   ]
