@@ -1,4 +1,4 @@
-__includes ["modules/attractions.nls" "modules/visitors.nls" "modules/spawning.nls" "modules/clown.nls" "modules/bfs.nls"]
+__includes ["modules/attractions.nls" "modules/visitors.nls" "modules/spawning.nls" "modules/clown.nls" "modules/bfs.nls" "modules/plots.nls"]
 
 ; Setup the environment
 globals [
@@ -33,14 +33,11 @@ to go
     ] [
       visitor-make-decisions
     ]
-
-;    visitor-enjoy-attraction
-;    visitor-update-satisfaction
-;    visitor-check-leaving-conditions
   ]
   update-queues
+  visitor-update-satisfaction
   update-attraction-labels ; Call a new procedure to update labels
-
+  update-satisfaction-plot
   tick
 end
 @#$#@#$#@
@@ -238,8 +235,45 @@ closing-time
 closing-time
 50
 10000
-50.0
+1000.0
 50
+1
+NIL
+HORIZONTAL
+
+PLOT
+6
+429
+377
+650
+Average Satisfaction Levels by Archetype
+Time
+Sastisfaction Level
+0.0
+10.0
+0.0
+100.0
+true
+true
+"" ""
+PENS
+"Ride Fanatic" 1.0 0 -8630108 true "" ""
+"Ride Enthusiast" 1.0 0 -2674135 true "" ""
+"Average Visitor" 1.0 0 -2064490 true "" ""
+"Leisure Enjoyer" 1.0 0 -1 true "" ""
+"Passive Sightseer" 1.0 0 -11221820 true "" ""
+
+SLIDER
+8
+661
+206
+694
+satisfaction-modifier
+satisfaction-modifier
+0
+1
+1.0
+0.1
 1
 NIL
 HORIZONTAL

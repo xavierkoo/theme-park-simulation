@@ -61,6 +61,7 @@ to spawning-visitors [number-of-visitors]
     set isWaiting false
     set waitTime 0
     set decision-made? false
+    set going-home? false
     set moving false
     set next-dest-name ""
     set current-location one-of turtles with [label = "\nEntrance"]
@@ -77,7 +78,7 @@ to spawning-visitors [number-of-visitors]
       ; Ride Fanatic
       set color violet
       set patience-level 320 + random 20 ; Ride Fanatics have high queue patience
-      set expected-attractions-rate random 120 + 20 ; Ride Fanatics expect to visit more attractions
+      set expected-attractions-rate random 8 + 5 ; Ride Fanatics expect to visit more attractions
       set staying-time random-normal 10 2 ; Ride Fanatics tend to spend the most time
       set repeat-ride? one-of [true true true true] ; Ride Fanatics absolutely likely to repeat rides
       set attraction-pref 0.7 ; Ride Fanatics have a high preference for rides

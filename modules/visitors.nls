@@ -16,7 +16,7 @@ visitors-own [
   current-queue ; gpt ??
   attraction-pref ; 0.0-1.0 indicates visitors pref for rides of activities (larger number pref for rides)
   decision-made? ; boolean, true if the visitor has made a decision on where to go next
-  
+  going-home?; boolean, true if visitor is going home
   
   current-location ; (Attraction Agent)
   current-location-name; (Attraction Name)
@@ -49,6 +49,17 @@ to visitor-make-decisions
         set next-destination one-of turtles with [label = "\nEntrance"]
         visitor-create-path
         set decision-made? true
+        set going-home? true
+        stop
+      ]
+      
+      ; Check if the visitor's satisfaction level is below the threshold
+      if satisfaction-level < 50 [
+;        print("Going Home, Not Satisfied")
+        set next-destination one-of turtles with [label = "\nEntrance"]
+        visitor-create-path
+        set decision-made? true
+        set going-home? true
         stop
       ]
 
@@ -181,6 +192,9 @@ to visitor-move-to-attraction
                 set decision-made? false
               ]
             ]
+            if [breed] of current-location = entrances and going-home? [
+                die
+            ]
             if length path = 0 and [breed] of current-location = attractions [
               visitor-check-queue
             ]   
@@ -243,19 +257,35 @@ to visitor-check-queue
  
 end
 
+; Update satisfaction based on experiences
+to visitor-update-satisfaction
+  ask visitors [
+    ; Calculate the expected number of attractions by this time
+    let expected-attractions-so-far (expected-attractions-rate / closing-time) * ticks
+    ; Check if the visitor has met, exceeded, or not met this expected number
+    ifelse length visited-attractions < expected-attractions-so-far [
+;      print("Decrease satisfaction")
+      ; Decrease satisfaction if fewer attractions visited than expected
+      set satisfaction-level satisfaction-level - satisfaction-modifier  ; Adjust the decrease
+      ; Ensure satisfaction level does not go below 0
+      if satisfaction-level < 0 [
+        set satisfaction-level 0
+      ]
+    ] [
+      if length visited-attractions > expected-attractions-so-far [
+;        print("Increase satisfaction")
+        ; Increase satisfaction if more attractions visited than expected
+        set satisfaction-level satisfaction-level + satisfaction-modifier  ; Adjust the increase
+        ; Ensure satisfaction level does not exceed 100
+        if satisfaction-level > 100 [
+          set satisfaction-level 100
+        ]
+      ]
+      ; No change if the visitor has met the expected number exactly
+    ]
+  ]
+end
 
-; Visitor enjoys the attraction and updates state 
-to visitor-enjoy-attraction 
-  ; Implement logic for enjoying an attraction and its effects 
-end  
 
-; Update satisfaction based on experiences 
-to visitor-update-satisfaction 
-  ; Implement logic for updating satisfaction levels 
-end  
 
-; Check if visitor decides to leave the park 
-to visitor-check-leaving-conditions 
-  ; Implement logic based on satisfaction level and staying time 
-end 
 

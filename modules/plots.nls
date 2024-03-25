@@ -1,0 +1,31 @@
+to update-satisfaction-plot
+  if any? visitors with [archetype = "Ride Fanatic"] [
+    let ride-fanatic-satisfaction mean [satisfaction-level] of visitors with [archetype = "Ride Fanatic"]
+    set-current-plot-pen "Ride Fanatic"
+    plot ride-fanatic-satisfaction
+  ]
+  
+  if any? visitors with [archetype = "Ride Enthusiast"] [
+    let ride-enthusiast-satisfaction mean [satisfaction-level] of visitors with [archetype = "Ride Enthusiast"]
+    set-current-plot-pen "Ride Enthusiast"
+    plot ride-enthusiast-satisfaction
+  ]
+  
+  if any? visitors with [archetype = "Average Visitor"] [
+    let average-visitor-satisfaction mean [satisfaction-level] of visitors with [archetype = "Average Visitor"]
+    set-current-plot-pen "Average Visitor"
+    plot average-visitor-satisfaction
+  ]
+  
+  if any? visitors with [archetype = "Leisure Enjoyer"] [
+    let leisure-enjoyer-satisfaction mean [satisfaction-level] of visitors with [archetype = "Leisure Enjoyer"]
+    set-current-plot-pen "Leisure Enjoyer"
+    plot leisure-enjoyer-satisfaction
+  ]
+  
+  if any? visitors with [archetype = "Passive Sightseer"] [
+    let passive-sightseer-satisfaction mean [satisfaction-level] of visitors with [archetype = "Passive Sightseer"]
+    set-current-plot-pen "Passive Sightseer"
+    plot passive-sightseer-satisfaction
+  ]
+end

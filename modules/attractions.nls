@@ -191,7 +191,6 @@ to update-queues
             set isWaiting false 
             set waitTime 0
             set decision-made? false
-            ; Additional state reset logic as needed
           ]
           set ride-capacity but-first ride-capacity
         ]
