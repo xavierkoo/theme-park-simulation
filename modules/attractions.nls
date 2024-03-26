@@ -37,8 +37,8 @@ to attraction-create-entrance
 end
 
 to attraction-create-rides
-  let rides ["Thunderbolt" "Carousel" "Aqua" "Skyward" "Flight" "Coaster" "Glide" "Dash" "Voyage" "Tunnel" "Falls" "Safari"]
-  let positions [[-20 -3 true 10 20] [-20 20 true 10 20] [20 -3 true 5 15] [20 20 true 5 15] [-20 25 true 5 10] [11 -3 false 5 10]
+  let rides ["Thunderbolt" "Carousel" "Aqua" "Skyward" "Flight" "Glide" "Dash" "Voyage" "Tunnel" "Falls" "Safari"]
+  let positions [[-20 -3 true 10 20] [-20 20 true 10 20] [20 -3 true 5 15] [20 20 true 5 15] [-20 25 true 5 10]
   [0 20 false 10 15] [0 25 false 10 15] [-28 10 false 20 20] [20 10 false 5 20] [28 10 false 5 5] [20 -8 false 5 15]]
 
   (foreach rides positions [
@@ -70,8 +70,8 @@ end
 
 ; Procedure to create activities
 to attraction-create-activities
-  let activities ["Laser" "Enchanted" "Hunt" "Wizard" "Observatory" "Maze" "Robotics" "Carnival"]
-  let positions [[-12 -8 5 10] [28 20 5 10] [-28 20 10 20] [28 -8 10 15] [-20 5 10 15] [20 25 5 20] [-28 -8 10 10] [0 15 10 15]]
+  let activities ["Enchanted" "Hunt" "Wizard" "Observatory" "Maze" "Robotics" "Carnival"]
+  let positions [[28 20 5 10] [-28 20 10 20] [28 -8 10 15] [-20 5 10 15] [20 25 5 20] [-28 -8 10 10] [0 15 10 15]]
 
   (foreach activities positions [
     [a p] ->
@@ -141,17 +141,15 @@ to attraction-create-links
   ; Tunnel links
   ask one-of turtles with [label = "\nThunderbolt"] [
     create-link-with one-of turtles with [label = "\nRobotics"]
-    create-link-with one-of turtles with [label = "\nLaser"]
     create-link-with one-of turtles with [label = "\nEntrance"]
-    create-link-with one-of turtles with [label = "\nCoaster"]
   ]
 
   ; Aqua links
   ask one-of turtles with [label = "\nAqua"] [
     create-link-with one-of turtles with [label = "\nWizard"]
     create-link-with one-of turtles with [label = "\nSafari"]
-    create-link-with one-of turtles with [label = "\nCoaster"]
     create-link-with one-of turtles with [label = "\nEntrance"]
+    create-link-with one-of turtles with [label = "\nThunderbolt"]
   ]
   
 
