@@ -28,4 +28,20 @@ to update-satisfaction-plot
     set-current-plot-pen "Passive Sightseer"
     plot passive-sightseer-satisfaction
   ]
+
+end
+
+to express-satisfaction-plot
+  
+  if any? visitors with [isExpress?] [
+    let express-satisfaction mean [satisfaction-level] of visitors with [isExpress?]
+    set-current-plot-pen "Express"
+    plot express-satisfaction
+  ]
+  
+  if any? visitors with [not isExpress?] [
+    let normal-satisfaction mean [satisfaction-level] of visitors with [not isExpress?]
+    set-current-plot-pen "Normal"
+    plot normal-satisfaction
+  ]
 end

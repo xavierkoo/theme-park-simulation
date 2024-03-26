@@ -37,6 +37,7 @@ to go
   visitor-update-satisfaction
   update-attraction-labels ; Call a new procedure to update labels
   update-satisfaction-plot
+  express-satisfaction-plot
   tick
 end
 @#$#@#$#@
@@ -286,7 +287,7 @@ satisfaction-threshold
 satisfaction-threshold
 0
 100
-50.0
+100.0
 1
 1
 NIL
@@ -301,6 +302,25 @@ queue-mode
 queue-mode
 "basic" "express" "priority"
 1
+
+PLOT
+8
+718
+378
+868
+Average Satisfaction Of Normal and Express Pass
+Time
+Sastisfaction Level
+0.0
+10.0
+0.0
+100.0
+true
+true
+"" ""
+PENS
+"Normal" 1.0 0 -13345367 true "" ""
+"Express" 1.0 0 -955883 true "" ""
 
 @#$#@#$#@
 ## WHAT IS IT?
