@@ -26,6 +26,8 @@ visitors-own [
   path
   moving;
   next-dest-name 
+  go-home-counter
+  go-home-threshold
 
 ]
 
@@ -186,17 +188,17 @@ to visitor-move-to-attraction
             set path but-first path 
           
             if length path = 0 and [breed] of current-location = entrances[  
-              if ticks < closing-time [ 
-                set decision-made? false
-              ]
+              set decision-made? false
+              set go-home-counter go-home-counter + 1
+              if go-home-counter > go-home-threshold [set going-home? true print("going home")]
             ]
             if [breed] of current-location = entrances and going-home? [
                 die
             ]
             if length path = 0 and [breed] of current-location = attractions [
               visitor-check-queue
+              set go-home-counter 0
             ]   
-
           set moving false
           ]
         ]
