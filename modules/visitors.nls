@@ -284,10 +284,10 @@ to visitor-check-queue
 
   let queue-length length [queue] of current-location
   let express-queue-length length [express-queue] of current-location
-  ifelse queue-length < patience-level or (express-queue-length < patience-level and isExpress?)[
+  ifelse queue-length < patience-level or (express-queue-length / 4 < patience-level and isExpress?)[
     ; If queue is longer than patience level, decide not to join and make a new decision
     ; If queue is within patience level, join the queue
-    ifelse express-queue-length < queue-length and isExpress?
+    ifelse express-queue-length / 4 < queue-length and isExpress?
     [
       ask current-location [
         set express-queue lput myself express-queue
