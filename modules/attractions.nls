@@ -14,6 +14,10 @@ attractions-own [
   ride-capacity ; A list of visitors currently on the ride or participating in the activity. Indicates how many visitors are being served.
   ride-time ; The remaining time for the current ride or activity session to complete. A countdown to when the next group can be served.
   capacity ; The maximum number of visitors that can be accommodated by the attraction at one time. Influences how many visitors can be moved from the queue to the ride-capacity list.
+  
+  express-queue ;
+  express-waiting-count
+  
 ]
 
 entrances-own [
@@ -45,7 +49,7 @@ to attraction-create-rides
     [r p] ->
     let x item 0 p
     let y item 1 p
-
+    
     ; Create a ride turtle at position (x, y)
     create-attractions 1 [
       set attraction-name r
@@ -64,8 +68,12 @@ to attraction-create-rides
       set attraction-popularity item 2 p
       set visited false
       set predecessor nobody
+      set express-queue [] ; 
     ]
   ])
+  
+  
+
 end
 
 ; Procedure to create activities
@@ -77,7 +85,7 @@ to attraction-create-activities
     [a p] ->
     let x item 0 p
     let y item 1 p
-
+    
     ; Create an activity turtle at position (x, y)
     create-attractions 1 [
       set attraction-name a
@@ -96,8 +104,10 @@ to attraction-create-activities
       set label-color white
       set visited false
       set predecessor nobody
+      set express-queue [] ; 
     ]
   ])
+  
 end
 
 
@@ -156,22 +166,32 @@ to attraction-create-links
 end
 
 to update-queues
+  
   ask attractions [
- 
-    if length queue > 0 [
+    if length queue > 0 or length express-queue > 0[
       ; Corrected to increment wait time for the last visitor in the queue
       ; Move visitors from queue to ride-capacity until full or queue is empty
-      while [length ride-capacity < capacity and not empty? queue and ride-time = -1] [
-        let rider first queue
-        set ride-capacity lput rider ride-capacity
-        set queue but-first queue
-        ; Update the waiting count after removing from queue
-        set waiting-count length queue
-;        ask rider [ set isWaiting false set waitTime 0 ] ; Assuming visitors have an isWaiting attribute
+      while [length ride-capacity < capacity and (not empty? queue or not empty? express-queue) and ride-time = -1] [
+        let express-counter 0
+        while [length ride-capacity < capacity and not empty? express-queue and express-counter <= 4] [
+          let express-rider first express-queue
+          set ride-capacity lput express-rider ride-capacity
+          set express-queue but-first express-queue
+          set express-counter express-counter + 1
+        ]
+        let queue-counter 0
+        while [length ride-capacity < capacity and not empty? queue and queue-counter <= 1]
+        [
+          let rider first queue
+          set ride-capacity lput rider ride-capacity
+          set queue but-first queue
+          ; Update the waiting count after removing from queue
+          set waiting-count length queue
+          set queue-counter queue-counter + 1
+        ]
       ]
-      ; Ride processing only if there are visitors on the ride
     ]
-          
+    
     if not empty? ride-capacity  [
       if ride-time = -1 [
         set ride-time service-rate ; Reset the ride time for the next cycle
@@ -203,7 +223,7 @@ to update-attraction-labels
   ask attractions [
     ; Assuming 'label' initially contains just the name of the attraction
     ; and 'waiting-count' is the attribute you've added
-    set label (word length queue "\n" attraction-name)
+    set label (word length queue "\n" attraction-name " " length express-queue)
   ]
 
 end

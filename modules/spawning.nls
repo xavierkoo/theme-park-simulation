@@ -67,6 +67,13 @@ to spawning-visitors [number-of-visitors]
     set go-home-counter 0
     set go-home-threshold 1
     set current-location one-of turtles with [label = "\nEntrance"]
+    
+    set isExpress? false
+    if queue-mode = "express"[
+      ifelse random-float 1 < 0.2; TO BE replaced with data
+      [ set isExpress? true ] 
+      [ set isExpress? false ]
+    ]
 ;    if target != nobody [ move-to target ] ; move to Entrance
     
     ; Assign visitor archetype + properties that are not affected by archetype

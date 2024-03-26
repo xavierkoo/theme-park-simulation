@@ -85,10 +85,10 @@ NIL
 1
 
 SLIDER
-20
-49
-192
-82
+19
+63
+191
+96
 fanatic-prob
 fanatic-prob
 0
@@ -100,8 +100,38 @@ NIL
 HORIZONTAL
 
 SLIDER
+197
+63
+369
+96
+enthu-prob
+enthu-prob
+0
+100
+100.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+18
+102
+190
+135
+average-prob
+average-prob
+0
+100
+100.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
 198
-49
+103
 370
 82
 enthu-prob
@@ -145,10 +175,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-19
-131
-191
-164
+18
+145
+190
+178
 passive-prob
 passive-prob
 0
@@ -160,10 +190,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-201
-131
-373
-164
+200
+145
+372
+178
 priority-pass-limit
 priority-pass-limit
 0
@@ -192,10 +222,10 @@ NIL
 1
 
 PLOT
-9
-174
-378
-360
+8
+188
+377
+374
 Number of Park Visitors
 Time
 Visitors
@@ -215,10 +245,10 @@ PENS
 "Passive Sightseer" 1.0 0 -11221820 true "" "plot count visitors with [color = cyan]"
 
 MONITOR
-10
-371
-157
-416
+9
+385
+156
+430
 Current Visitor Count
 count visitors
 17
@@ -226,10 +256,10 @@ count visitors
 11
 
 SLIDER
-172
-377
-344
-410
+171
+391
+343
+424
 closing-time
 closing-time
 50
@@ -241,10 +271,10 @@ NIL
 HORIZONTAL
 
 PLOT
-6
-429
-377
-650
+5
+443
+376
+664
 Average Satisfaction Levels by Archetype
 Time
 Sastisfaction Level
@@ -263,10 +293,10 @@ PENS
 "Passive Sightseer" 1.0 0 -11221820 true "" ""
 
 SLIDER
-8
-661
-206
-694
+7
+675
+205
+708
 satisfaction-modifier
 satisfaction-modifier
 0
@@ -278,10 +308,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-213
-661
-386
-694
+212
+675
+385
+708
 satisfaction-threshold
 satisfaction-threshold
 0
@@ -291,6 +321,16 @@ satisfaction-threshold
 1
 NIL
 HORIZONTAL
+
+CHOOSER
+201
+10
+339
+55
+queue-mode
+queue-mode
+"basic" "express" "priority"
+1
 
 @#$#@#$#@
 ## WHAT IS IT?

@@ -28,6 +28,7 @@ visitors-own [
   next-dest-name 
   go-home-counter
   go-home-threshold
+  isExpress?
 
 ]
 
@@ -280,27 +281,37 @@ end
 
 ; Check the queue of the attraction and decide whether to stay 
 to visitor-check-queue
-  ; Check if the visitor is currently deciding to join a queue
-  
-  ; Assess the current destination's queue length
+
   let queue-length length [queue] of current-location
-  
-  ; Compare queue length with visitor's patience level
-  ifelse queue-length > patience-level [
+  let express-queue-length length [express-queue] of current-location
+  ifelse queue-length < patience-level or (express-queue-length < patience-level and isExpress?)[
     ; If queue is longer than patience level, decide not to join and make a new decision
-    set decision-made? false
-  ] [
     ; If queue is within patience level, join the queue
-    
-    ask current-location [
-      
-      set queue lput myself queue
-      set waiting-count length queue
-      
+    ifelse express-queue-length < queue-length and isExpress?
+    [
+      ask current-location [
+        set express-queue lput myself express-queue
+        set express-waiting-count length express-queue
+      ]
+    ]
+    [
+      ifelse queue-length < patience-level [
+        ask current-location [
+          set queue lput myself queue
+          set waiting-count length queue
+        ]
+      ][
+        set decision-made? false
+        stop
+      ]
     ]
     set isWaiting true
+    
+  ] [
+    ; If queue is longer than patience level, decide not to join and make a new decision
+    set decision-made? false
   ]
- 
+  
 end
 
 ; Update satisfaction based on experiences
