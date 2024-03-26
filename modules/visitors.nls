@@ -7,7 +7,7 @@ breed [visitors visitor]
 visitors-own [
   archetype
   patience-level ; baulking point, max queue time of visitor, influenced by attraction(pops) and archetype.
-  satisfaction-level ; determines whether visitor stays in the park influenced by archetype and expected-attractions-rate
+  satisfaction-level ; threshold for determining whether visitor stays in the park influenced by archetype and expected-attractions-rate
   expected-attractions-rate ; number of attractions visitors expects to take part in by the end of the day influenced by archetype
   staying-time ; duration of visitors staying in the park.
   repeat-ride? ; boolean, whether visitor repeats the ride
@@ -29,6 +29,7 @@ visitors-own [
   go-home-counter
   go-home-threshold
   isExpress?
+  isPriority?
 
 ]
 
@@ -56,7 +57,7 @@ to visitor-make-decisions
       [0 20 false] [0 25 false] [-13 5 false] [20 5 false] [28 5 false] [20 -15 false]]
       
       ; Check if the visitor's satisfaction level is below the threshold
-      if satisfaction-level < satisfaction-threshold [
+      if satisfaction-level < 50 [
 ;        print("Going Home, Not Satisfied")
         set next-destination one-of turtles with [label = "\nEntrance"]
         visitor-create-path
