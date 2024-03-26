@@ -47,8 +47,8 @@ to visitor-make-decisions
       let current-ycor ycor
       
       ; Define locally activities/rides and their positions
-      let local-activities ["Laser" "Enchanted" "Hunt" "Wizard" "Observatory" "Maze" "Robotics" "Carnival"]
-      let activities-positions [[-12 -8] [28 20] [-28 20] [28 -8] [-20 5] [20 25] [-28 -8] [0 15]]
+      let local-activities ["Enchanted" "Hunt" "Wizard" "Observatory" "Maze" "Robotics" "Carnival"]
+      let activities-positions [[28 20] [-28 20] [28 -8] [-20 5] [20 25] [-28 -8] [0 15]]
       
       let local-rides ["Thunderbolt" "Carousel" "Aqua" "Skyward" "Flight" "Coaster" "Glide" "Dash" "Voyage" "Tunnel" "Falls" "Safari"]
       let rides-positions [[-20 -8 true] [-20 20 true] [20 -8 true] [20 20 true] [-20 25 false] [11 -8 false]
@@ -189,11 +189,7 @@ end
 to visitor-move-to-attraction
   ; Check if the visitor has a destination
     ask visitors [
-    ifelse isWaiting [
-      ; If the visitor is waiting, no need to move
-      ; The update-queues procedure will handle their progression
-
-    ] [
+    if not isWaiting [
       ; The visitor is not waiting and should move towards the next destination.
       if not empty? path [
         if not moving [
