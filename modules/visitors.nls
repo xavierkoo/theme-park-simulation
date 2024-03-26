@@ -47,8 +47,8 @@ to visitor-make-decisions
       let current-ycor ycor
       
       ; Define locally activities/rides and their positions
-      let local-activities ["Enchanted" "Hunt" "Wizard" "Observatory" "Maze" "Robotics" "Carnival"]
-      let activities-positions [[28 20] [-28 20] [28 -8] [-20 5] [20 25] [-28 -8] [0 15]]
+      let local-activities ["Laser" "Enchanted" "Hunt" "Wizard" "Observatory" "Maze" "Robotics" "Carnival"]
+      let activities-positions [[-12 -8] [28 20] [-28 20] [28 -8] [-20 5] [20 25] [-28 -8] [0 15]]
       
       let local-rides ["Thunderbolt" "Carousel" "Aqua" "Skyward" "Flight" "Coaster" "Glide" "Dash" "Voyage" "Tunnel" "Falls" "Safari"]
       let rides-positions [[-20 -8 true] [-20 20 true] [20 -8 true] [20 20 true] [-20 25 false] [11 -8 false]
@@ -70,7 +70,7 @@ to visitor-make-decisions
       [
        ; Calculate distances and apply popularity adjustment
         let ride-distances map [p -> distancexy first p last butlast p] rides-positions
-        let popularity-adjustment map [p -> ifelse-value last p [2.5] [1]] rides-positions ; popularity multiplier by 2.5 times
+        let popularity-adjustment map [p -> ifelse-value last p [0.5] [1]] rides-positions ; popularity reduces the distance factor
         let adjusted-ride-distances map [pair -> (first pair) * (last pair)] (map list ride-distances popularity-adjustment)
         
         ; Calculate initial probabilities (not yet normalized)
@@ -149,11 +149,24 @@ to visitor-make-decisions
           p ->
           set cumulative-activity-probabilities lput (last cumulative-activity-probabilities + p) cumulative-activity-probabilities
         ]
+       
+        ; Generate a random threshold to choose an activity based on weighted probabilities
+        let threshold random-float last cumulative-activity-probabilities
+        let chosen-activity-index -1 ; Initialize to an invalid index
         
-;        print(word "Acitivity:" cumulative-activity-probabilities)
+        ; Find the index where the threshold is less than the cumulative probability
+        foreach n-values (length cumulative-activity-probabilities) [i -> i] [
+          i ->
+          if threshold < item i cumulative-activity-probabilities and chosen-activity-index = -1 [
+            set chosen-activity-index i
+          ]
+        ]
         
-        ; Choose an activity based on the weighted probabilities
-        let chosen-activity-index position true (map [p -> random-float 1 < p] cumulative-activity-probabilities)
+        ; Adjust for the offset introduced by adding a 0 at the start of cumulative-ride-probabilities
+        if chosen-activity-index > 0 [
+          set chosen-activity-index chosen-activity-index - 1
+        ]
+        
         ifelse chosen-activity-index != FALSE and chosen-activity-index >= 0 and chosen-activity-index < length local-activities [
           let chosen-activity item chosen-activity-index local-activities
           let chosen-activity-position item chosen-activity-index activities-positions
@@ -189,7 +202,11 @@ end
 to visitor-move-to-attraction
   ; Check if the visitor has a destination
     ask visitors [
-    if not isWaiting [
+    ifelse isWaiting [
+      ; If the visitor is waiting, no need to move
+      ; The update-queues procedure will handle their progression
+
+    ] [
       ; The visitor is not waiting and should move towards the next destination.
       if not empty? path [
         if not moving [
