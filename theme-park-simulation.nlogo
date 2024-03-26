@@ -161,10 +161,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-200
-145
-372
-178
+213
+716
+385
+749
 priority-pass-limit
 priority-pass-limit
 0
