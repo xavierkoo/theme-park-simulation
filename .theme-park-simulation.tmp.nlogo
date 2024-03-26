@@ -300,22 +300,7 @@ CHOOSER
 queue-mode
 queue-mode
 "basic" "express" "priority"
-1
-
-SLIDER
-16
-715
-191
-748
-express-pass-prob
-express-pass-prob
-0
-1
-0.2
-0.1
-1
-NIL
-HORIZONTAL
+2
 
 @#$#@#$#@
 ## WHAT IS IT?

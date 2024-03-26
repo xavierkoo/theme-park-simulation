@@ -70,7 +70,7 @@ to spawning-visitors [number-of-visitors]
     
     set isExpress? false
     if queue-mode = "express"[
-      ifelse random-float 1 < 0.2; TO BE replaced with data
+      ifelse random-float 1 < express-pass-prob ; slider
       [ set isExpress? true ] 
       [ set isExpress? false ]
     ]
