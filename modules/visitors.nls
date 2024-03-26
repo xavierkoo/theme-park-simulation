@@ -55,7 +55,7 @@ to visitor-make-decisions
       [0 20 false] [0 25 false] [-13 5 false] [20 5 false] [28 5 false] [20 -15 false]]
       
       ; Check if the visitor's satisfaction level is below the threshold
-      if satisfaction-level < satisfaction-threshold [
+      if satisfaction-level < 50 [
 ;        print("Going Home, Not Satisfied")
         set next-destination one-of turtles with [label = "\nEntrance"]
         visitor-create-path
@@ -63,9 +63,9 @@ to visitor-make-decisions
         set going-home? true
         stop
       ]
-
+      
       ; Determine if the visitor prefers rides or activities and calculate distances
-      ifelse random-float 1 < attraction-pref
+      ifelse random-float 1 <= attraction-pref
       ; ride chosen
       [
         ; Calculate cumulative probabilities
@@ -102,10 +102,12 @@ to visitor-make-decisions
             visitor-create-path
           ] [
             ; If not repeating or haven't visited this ride before, proceed normally
-            if not member? chosen-ride visited-attractions [
+            ifelse not member? chosen-ride visited-attractions [
               set visited-attractions lput chosen-ride visited-attractions
               set next-destination one-of attractions with [attraction-name = chosen-ride]
               visitor-create-path
+            ][          
+              stop
             ]
           ]
       
@@ -133,10 +135,12 @@ to visitor-make-decisions
             visitor-create-path
           ] [
             ; If not repeating or haven't visited this ride before, proceed normally
-            if not member? chosen-activity visited-attractions [
+            ifelse not member? chosen-activity visited-attractions [
               set visited-attractions lput chosen-activity visited-attractions
               set next-destination one-of attractions with [attraction-name = chosen-activity]
               visitor-create-path
+            ][
+              stop
             ]
           ]
 
@@ -190,7 +194,7 @@ to visitor-move-to-attraction
             if length path = 0 and [breed] of current-location = entrances[  
               set decision-made? false
               set go-home-counter go-home-counter + 1
-              if go-home-counter > go-home-threshold [set going-home? true print("going home")]
+              if go-home-counter > go-home-threshold [set going-home? true ]
             ]
             if [breed] of current-location = entrances and going-home? [
                 die
@@ -199,6 +203,7 @@ to visitor-move-to-attraction
               visitor-check-queue
               set go-home-counter 0
             ]   
+
           set moving false
           ]
         ]
