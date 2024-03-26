@@ -68,12 +68,26 @@ to visitor-make-decisions
       ifelse random-float 1 <= attraction-pref
       ; ride chosen
       [
-        ; Calculate cumulative probabilities
+       ; Calculate distances and apply popularity adjustment
         let ride-distances map [p -> distancexy first p last butlast p] rides-positions
-        let popularity-adjustment map [p -> ifelse-value last p [1.5] [1]] rides-positions ; popular rides have 1.5 times multiplier
+        let popularity-adjustment map [p -> ifelse-value last p [2.5] [1]] rides-positions ; popularity multiplier by 2.5 times
         let adjusted-ride-distances map [pair -> (first pair) * (last pair)] (map list ride-distances popularity-adjustment)
+        
+        ; Calculate initial probabilities (not yet normalized)
         let ride-probabilities n-values (length adjusted-ride-distances) [i -> 1 - (item i adjusted-ride-distances) / (max adjusted-ride-distances)]
-        let cumulative-ride-probabilities fput 0 (reduce sentence (map list ride-probabilities))
+        
+        ; Normalize probabilities so they sum to 1
+        let total-probability sum ride-probabilities
+        let normalized-ride-probabilities map [p -> p / total-probability] ride-probabilities
+        
+        ; Calculate cumulative probabilities correctly
+        let cumulative-ride-probabilities (list 0) ; Initialize with 0 to represent the starting point
+        foreach normalized-ride-probabilities [
+          p ->
+          set cumulative-ride-probabilities lput (last cumulative-ride-probabilities + p) cumulative-ride-probabilities
+        ]
+        
+;        print(word "Ride:" cumulative-ride-probabilities)
         
         ; Generate a random threshold to choose a ride based on weighted probabilities
         let threshold random-float last cumulative-ride-probabilities
@@ -119,10 +133,24 @@ to visitor-make-decisions
       ]
       ; activity chosen
       [
-        ; Calculate cumulative probabilities
+        ; Calculate distances for activities
         let activity-distances map [p -> distancexy first p last p] activities-positions
+        
+        ; Calculate initial probabilities (not yet normalized) based on distances
         let activity-probabilities n-values (length activity-distances) [i -> 1 - (item i activity-distances) / (max activity-distances)]
-        let cumulative-activity-probabilities (reduce sentence (map list (fput 0 activity-probabilities)))
+        
+        ; Normalize these probabilities so they sum to 1
+        let total-activity-probability sum activity-probabilities
+        let normalized-activity-probabilities map [p -> p / total-activity-probability] activity-probabilities
+        
+        ; Correctly calculate cumulative probabilities
+        let cumulative-activity-probabilities (list 0) ; Initialize with 0 to represent the starting point
+        foreach normalized-activity-probabilities [
+          p ->
+          set cumulative-activity-probabilities lput (last cumulative-activity-probabilities + p) cumulative-activity-probabilities
+        ]
+        
+;        print(word "Acitivity:" cumulative-activity-probabilities)
         
         ; Choose an activity based on the weighted probabilities
         let chosen-activity-index position true (map [p -> random-float 1 < p] cumulative-activity-probabilities)

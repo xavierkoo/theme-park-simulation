@@ -93,7 +93,7 @@ fanatic-prob
 fanatic-prob
 0
 100
-32.0
+100.0
 1
 1
 NIL
@@ -108,7 +108,7 @@ enthu-prob
 enthu-prob
 0
 100
-40.0
+0.0
 1
 1
 NIL
@@ -123,7 +123,7 @@ average-prob
 average-prob
 0
 100
-89.0
+0.0
 1
 1
 NIL
@@ -138,7 +138,7 @@ leisure-prob
 leisure-prob
 0
 100
-60.0
+0.0
 1
 1
 NIL
@@ -153,7 +153,7 @@ passive-prob
 passive-prob
 0
 100
-92.0
+0.0
 1
 1
 NIL
