@@ -301,7 +301,7 @@ CHOOSER
 queue-mode
 queue-mode
 "basic" "express" "priority"
-2
+1
 
 PLOT
 8
@@ -321,6 +321,21 @@ true
 PENS
 "Normal" 1.0 0 -13345367 true "" ""
 "Express" 1.0 0 -955883 true "" ""
+
+SLIDER
+461
+744
+633
+777
+express-prob
+express-prob
+0
+1
+0.2
+0.1
+1
+NIL
+HORIZONTAL
 
 @#$#@#$#@
 ## WHAT IS IT?

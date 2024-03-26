@@ -68,7 +68,7 @@ to spawning-visitors [number-of-visitors]
     set go-home-threshold 1
     set current-location one-of turtles with [label = "\nEntrance"]
     
-    set isExpress? true
+    set isExpress? express-prob
     if queue-mode = "express"[
       ifelse random-float 1 < 0.2; TO BE replaced with data
       [ set isExpress? true ] 
