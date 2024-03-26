@@ -161,10 +161,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-213
-716
-385
-749
+200
+145
+372
+178
 priority-pass-limit
 priority-pass-limit
 0
@@ -272,7 +272,7 @@ satisfaction-modifier
 satisfaction-modifier
 0
 1
-1.0
+0.4
 0.1
 1
 NIL
@@ -287,7 +287,7 @@ satisfaction-threshold
 satisfaction-threshold
 0
 100
-100.0
+42.0
 1
 1
 NIL
@@ -301,7 +301,7 @@ CHOOSER
 queue-mode
 queue-mode
 "basic" "express" "priority"
-1
+2
 
 PLOT
 8
@@ -313,7 +313,7 @@ Time
 Sastisfaction Level
 0.0
 10.0
-0.0
+50.0
 100.0
 true
 true

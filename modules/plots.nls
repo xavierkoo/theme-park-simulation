@@ -1,4 +1,5 @@
 to update-satisfaction-plot
+  set-current-plot "Average Satisfaction Levels by Archetype"
   if any? visitors with [archetype = "Ride Fanatic"] [
     let ride-fanatic-satisfaction mean [satisfaction-level] of visitors with [archetype = "Ride Fanatic"]
     set-current-plot-pen "Ride Fanatic"
@@ -32,7 +33,7 @@ to update-satisfaction-plot
 end
 
 to express-satisfaction-plot
-  
+  set-current-plot "Average Satisfaction Of Normal and Express Pass"
   if any? visitors with [isExpress?] [
     let express-satisfaction mean [satisfaction-level] of visitors with [isExpress?]
     set-current-plot-pen "Express"
@@ -44,4 +45,5 @@ to express-satisfaction-plot
     set-current-plot-pen "Normal"
     plot normal-satisfaction
   ]
+
 end
