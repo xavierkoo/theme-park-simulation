@@ -180,7 +180,7 @@ NIL
 PLOT
 8
 188
-422
+377
 374
 Number of Park Visitors
 Time
@@ -212,10 +212,10 @@ count visitors
 11
 
 SLIDER
-617
-739
-789
-772
+603
+738
+775
+771
 closing-time
 closing-time
 50
@@ -229,7 +229,7 @@ HORIZONTAL
 PLOT
 7
 380
-423
+378
 601
 Average Satisfaction Levels by Archetype
 Time
@@ -249,10 +249,10 @@ PENS
 "Passive Sightseer" 1.0 0 -11221820 true "" ""
 
 SLIDER
-426
-780
-601
-813
+392
+777
+567
+810
 satisfaction-modifier
 satisfaction-modifier
 0
@@ -264,10 +264,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-427
-738
-600
-771
+393
+735
+566
+768
 satisfaction-threshold
 satisfaction-threshold
 0
@@ -291,9 +291,9 @@ queue-mode
 PLOT
 7
 610
-424
+377
 760
-Average Satisfaction Of Normal and Express Pass Holders
+Average Satisfaction Of Normal and Express Pass
 Time
 Sastisfaction Level
 0.0
@@ -308,9 +308,9 @@ PENS
 "Express" 1.0 0 -955883 true "" ""
 
 SLIDER
-800
+792
 739
-972
+964
 772
 express-prob
 express-prob
@@ -323,10 +323,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-617
-781
-789
-814
+603
+780
+775
+813
 priority-pass-limit
 priority-pass-limit
 0

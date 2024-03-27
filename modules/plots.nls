@@ -33,7 +33,7 @@ to update-satisfaction-plot
 end
 
 to express-satisfaction-plot
-  set-current-plot "Average Satisfaction Of Normal and Express Pass"
+  set-current-plot "Average Satisfaction Of Normal and Express Pass Holders"
   if any? visitors with [isExpress?] [
     let express-satisfaction mean [satisfaction-level] of visitors with [isExpress?]
     set-current-plot-pen "Express"

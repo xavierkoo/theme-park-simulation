@@ -50,9 +50,9 @@ to attraction-create-entrance
 end
 
 to attraction-create-rides
-  let rides ["Thunderbolt" "Carousel" "Aqua" "Skyward" "Flight" "Glide" "Dash" "Voyage" "Tunnel" "Falls" "Safari"]
+  let rides ["Thunderbolt" "Carousel" "Aqua" "Skyward" "Flight" "Glide" "Dash" "Voyage" "Tunnel" "Falls"]
   let positions [[-20 -3 true 10 20] [-20 20 true 10 20] [20 -3 true 5 15] [20 20 true 5 15] [-20 25 true 5 10]
-  [0 20 false 10 15] [0 25 false 10 15] [-28 10 false 20 20] [20 10 false 5 20] [28 10 false 5 5] [20 -8 false 5 15]]
+  [0 20 false 10 15] [0 25 false 10 15] [-28 10 false 20 20] [20 10 false 5 20] [28 10 false 5 5]]
 
   (foreach rides positions [
     [r p] ->
@@ -168,7 +168,6 @@ to attraction-create-links
   ; Aqua links
   ask one-of turtles with [label = "\nAqua"] [
     create-link-with one-of turtles with [label = "\nWizard"]
-    create-link-with one-of turtles with [label = "\nSafari"]
     create-link-with one-of turtles with [label = "\nEntrance"]
     create-link-with one-of turtles with [label = "\nThunderbolt"]
   ]
@@ -231,15 +230,26 @@ to update-queues
 end
 
 to update-attraction-labels
-;  ask visitors [
-;    print(path)
-;  ]
   ask attractions [
-    ; Assuming 'label' initially contains just the name of the attraction
-    ; and 'waiting-count' is the attribute you've added
+    ; Initialize the label with the attraction name for all cases.
+    let base-label attraction-name
 
-    set label (word "Q: " length queue "\n" attraction-name " E: " length express-queue "\nV: " length virtual-queue)
-    
+    ; Always show the basic queue length
+    let q-label (word "Q: " length queue)
+
+    ; Initialize express and virtual queue labels as empty strings
+    let e-label ""
+    let v-label ""
+
+    ; Conditionally add details to the label based on the queue-mode
+    if queue-mode = "express" or queue-mode = "priority" [
+      set e-label (word "|E: " length express-queue)
+    ]
+    if queue-mode = "priority" [
+      set v-label (word "|V: " length virtual-queue)
+    ]
+
+    ; Combine the parts to form the final label
+    set label (word "\n" base-label "\n" q-label e-label v-label)
   ]
-
 end

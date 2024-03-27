@@ -51,9 +51,9 @@ to visitor-make-decisions
       let local-activities ["Enchanted" "Hunt" "Wizard" "Observatory" "Maze" "Robotics" "Carnival"]
       let activities-positions [[28 20] [-28 20] [28 -8] [-20 5] [20 25] [-28 -8] [0 15]]
       
-      let local-rides ["Thunderbolt" "Carousel" "Aqua" "Skyward" "Flight" "Glide" "Dash" "Voyage" "Tunnel" "Falls" "Safari"]
+      let local-rides ["Thunderbolt" "Carousel" "Aqua" "Skyward" "Flight" "Glide" "Dash" "Voyage" "Tunnel" "Falls"]
       let rides-positions [[-20 -8 true] [-20 20 true] [20 -8 true] [20 20 true] [-20 25 false]
-        [0 20 false] [0 25 false] [-13 5 false] [20 5 false] [28 5 false] [20 -15 false]]
+        [0 20 false] [0 25 false] [-13 5 false] [20 5 false] [28 5 false]]
       
       ; Check if the visitor's satisfaction level is below the threshold
       if satisfaction-level < 50 [
