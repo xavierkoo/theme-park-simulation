@@ -1,3 +1,7 @@
+globals [   
+
+]  
+
 breed [attractions attraction]
 breed [entrances entrance]
 
@@ -20,6 +24,8 @@ attractions-own [
   
   virtual-queue ;
   virtual-waiting-count
+  isVirtual?
+  
   
 ]
 
@@ -62,7 +68,7 @@ to attraction-create-rides
       set color green
       set label (word "\n" r)
       set label-color white
-      set service-rate item 3 p
+      set service-rate item 3 p ; RENAME!!!!! IT'S NOT SERVICE RATE BUT ACTUAL RIDE TIME
       set waiting-count 0
       set queue [] ; Initialize the queue as an empty list
       set ride-capacity [] ; 
@@ -217,6 +223,9 @@ to update-queues
         ]
         set ride-time -1 ; Reset the ride time for the next cycle
       ]
+    ] 
+    if isPriorityPassActive? and length queue > (capacity * 3)[
+      
     ]
   ]
 end
@@ -228,7 +237,9 @@ to update-attraction-labels
   ask attractions [
     ; Assuming 'label' initially contains just the name of the attraction
     ; and 'waiting-count' is the attribute you've added
-    set label (word length queue "\n" attraction-name " " length express-queue)
+
+    set label (word "Q: " length queue "\n" attraction-name " E: " length express-queue "\nV: " length virtual-queue)
+    
   ]
 
 end

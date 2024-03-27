@@ -57,6 +57,7 @@ to spawning-visitors [number-of-visitors]
     set shape "person"
     set size 0.8
     setxy 0 -28 ; default position
+    set walking-speed 2
     set path []
     set isWaiting false
     set waitTime 0
@@ -67,6 +68,7 @@ to spawning-visitors [number-of-visitors]
     set go-home-counter 0
     set go-home-threshold 1
     set current-location one-of turtles with [label = "\nEntrance"]
+    set priority-pass []
     
     set isExpress? false
     if queue-mode = "express"[
@@ -74,9 +76,9 @@ to spawning-visitors [number-of-visitors]
       [ set isExpress? true ] 
       [ set isExpress? false ]
     ] 
- 
-    set isPriority? queue-mode = "priority"
-;    if target != nobody [ move-to target ] ; move to Entrance
+    if queue-mode = "piority"[
+      set isExpress? true
+    ] 
     
     ; Assign visitor archetype + properties that are not affected by archetype
     set priority-pass-usage-limit priority-pass-limit
