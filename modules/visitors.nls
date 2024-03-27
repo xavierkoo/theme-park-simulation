@@ -49,7 +49,7 @@ to visitor-make-decisions
       
       ; Define locally activities/rides and their positions
       let local-activities ["Enchanted" "Hunt" "Wizard" "Observatory" "Maze" "Robotics" "Carnival"]
-      let activities-positions [[28 20] [-28 20] [28 -8] [-20 5] [20 25] [-28 -8] [0 15]]
+      let activities-positions [[28 20] [-28 20] [25 -10] [-20 5] [20 25] [-28 -8] [0 15]]
       
       let local-rides ["Thunderbolt" "Carousel" "Aqua" "Skyward" "Flight" "Glide" "Dash" "Voyage" "Tunnel" "Falls"]
       let rides-positions [[-20 -8 true] [-20 20 true] [20 -8 true] [20 20 true] [-20 25 false]
@@ -122,7 +122,7 @@ to visitor-make-decisions
             ]
             
             if length priority-pass != 0 [
-              ifelse ticks + 35 >= item 1 priority-pass [
+              ifelse ticks + 15 >= item 1 priority-pass [
                 let priority-pass-attraction item 0 priority-pass
                 set next-destination one-of attractions with [attraction-name = priority-pass-attraction ]
                 visitor-create-path
@@ -155,7 +155,7 @@ to visitor-make-decisions
               ]
               
               if length priority-pass != 0 [
-                ifelse ticks + 35 >= item 1 priority-pass [
+                ifelse ticks + 15 >= item 1 priority-pass [
                   let priority-pass-attraction item 0 priority-pass
                   set next-destination one-of attractions with [attraction-name = priority-pass-attraction ]
                   visitor-create-path
@@ -233,7 +233,7 @@ to visitor-make-decisions
             ]
             
             if length priority-pass != 0 [
-              ifelse ticks + 35 >= item 1 priority-pass [
+              ifelse ticks + 15 >= item 1 priority-pass [
                 let priority-pass-attraction item 0 priority-pass
                 set next-destination one-of attractions with [attraction-name = priority-pass-attraction ]
                 visitor-create-path
@@ -265,7 +265,7 @@ to visitor-make-decisions
               ]
               
               if length priority-pass != 0 [
-                ifelse ticks + 35 >= item 1 priority-pass [
+                ifelse ticks + 15 >= item 1 priority-pass [
                   let priority-pass-attraction item 0 priority-pass
                   set next-destination one-of attractions with [attraction-name = priority-pass-attraction ]
                   visitor-create-path
@@ -329,7 +329,7 @@ to visitor-move-to-attraction
         if current-location != nobody and moving [
           face current-location
           fd walking-speed 
-          if distance current-location < 1 [
+          if distance current-location < walking-speed [ ; less than walking-speed else visitors might get stuck due to difference in walking speed and arrival sensitivity
             ; Check the queue and decide whether to join, decision-made? set back to false if queue is longer than visitor patience level
             ; The visitor has arrived at the destination.
             set current-location-name next-dest-name
