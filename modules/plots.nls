@@ -29,6 +29,12 @@ to update-satisfaction-plot
     set-current-plot-pen "Passive Sightseer"
     plot passive-sightseer-satisfaction
   ]
+  
+  if any? visitors [
+    let overall-satisfaction mean [satisfaction-level] of visitors
+    set-current-plot-pen "Overall"
+    plot overall-satisfaction
+  ]
 
 end
 
@@ -48,35 +54,41 @@ to express-satisfaction-plot
 end
 
 to update-waitTime-plot
-  set-current-plot "Average Wait Time by Archetype"
+  set-current-plot "Average Wait Time Per Attraction"
   
   if any? visitors with [archetype = "Ride Fanatic"] [
-    let ride-fanatic-waitTime mean [waitTime] of visitors with [archetype = "Ride Fanatic"]
+    let ride-fanatic-waitTime mean [waitTime / max list (length visited-attractions) 1] of visitors with [archetype = "Ride Fanatic" ]
     set-current-plot-pen "Ride Fanatic"
     plot ride-fanatic-waitTime
   ]
   
   if any? visitors with [archetype = "Ride Enthusiast"] [
-    let ride-enthusiast-waitTime mean [waitTime] of visitors with [archetype = "Ride Enthusiast"]
+    let ride-enthusiast-waitTime mean [waitTime / max list (length visited-attractions) 1] of visitors with [archetype = "Ride Enthusiast" ]
     set-current-plot-pen "Ride Enthusiast"
     plot ride-enthusiast-waitTime
   ]
   
   if any? visitors with [archetype = "Average Visitor"] [
-    let average-visitor-waitTime mean [waitTime] of visitors with [archetype = "Average Visitor"]
+    let average-visitor-waitTime mean [waitTime / max list (length visited-attractions) 1] of visitors with [archetype = "Average Visitor" ]
     set-current-plot-pen "Average Visitor"
     plot average-visitor-waitTime
   ]
   
   if any? visitors with [archetype = "Leisure Enjoyer"] [
-    let leisure-enjoyer-waitTime mean [waitTime] of visitors with [archetype = "Leisure Enjoyer"]
+    let leisure-enjoyer-waitTime mean [waitTime / max list (length visited-attractions) 1] of visitors with [archetype = "Leisure Enjoyer"]
     set-current-plot-pen "Leisure Enjoyer"
     plot leisure-enjoyer-waitTime
   ]
   
   if any? visitors with [archetype = "Passive Sightseer"] [
-    let passive-sightseer-waitTime mean [waitTime] of visitors with [archetype = "Passive Sightseer"]
+    let passive-sightseer-waitTime mean [waitTime / max list (length visited-attractions) 1] of visitors with [archetype = "Passive Sightseer"]
     set-current-plot-pen "Passive Sightseer"
     plot passive-sightseer-waitTime
+  ]
+  
+    if any? visitors [
+    let visitors-waitTime mean [waitTime / max list (length visited-attractions) 1] of visitors 
+    set-current-plot-pen "Overall"
+    plot visitors-waitTime
   ]
 end

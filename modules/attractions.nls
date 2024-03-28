@@ -51,9 +51,9 @@ end
 
 to attraction-create-rides
   let random-ride-time random 3
-  let rides ["Thunderbolt" "Carousel" "Aqua" "Skyward" "Flight" "Glide" "Dash" "Voyage" "Tunnel" "Falls"]
-  let positions [[-20 -3 true 4 20] [-20 20 true 4 20] [20 -3 true 4 15] [20 20 true 4 15] [-20 25 true 4 10]
-  [0 20 false 3 15] [0 25 false 2 15] [-28 10 false 3 20] [20 10 false 2 20] [28 10 false 3 5]]
+  let rides ["Thunderbolt" "Carousel" "Aqua" "Skyward" "Flight" "Glide" "Dash" "Voyage" "Tunnel"]
+  let positions [[-20 -3 true 10 10] [-20 20 true 10 10] [20 -3 true 7 8] [20 20 true 5 8] [-20 25 false 5 5]
+  [0 20 false 5 8] [0 25 false 4 8] [-28 10 false 5 10] [20 10 false 4 10]]
 
   (foreach rides positions [
     [r p] ->
@@ -89,8 +89,8 @@ end
 
 ; Procedure to create activities
 to attraction-create-activities
-  let activities ["Enchanted" "Hunt" "Wizard" "Observatory" "Maze" "Robotics" "Carnival"]
-  let positions [[28 20 3 10] [-28 20 4 20] [25 -10 2 15] [-20 5 3 15] [20 25 4 20] [-28 -8 3 10] [0 15 4 15]]
+  let activities ["Enchanted" "Hunt" "Wizard" "Observatory" "Robotics" "Carnival"]
+  let positions [[28 20 5 5] [-28 20 8 10] [25 -10 5 8] [-20 5 4 8] [-28 -8 6 5] [0 15 5 8]]
 
   (foreach activities positions [
     [a p] ->
@@ -143,14 +143,12 @@ to attraction-create-links
 
   ; Skyward links
   ask one-of turtles with [label = "\nSkyward"] [
-    create-link-with one-of turtles with [label = "\nMaze"]
     create-link-with one-of turtles with [label = "\nEnchanted"]
     create-link-with one-of turtles with [label = "\nTunnel"]
   ]
 
   ; Tunnel links
   ask one-of turtles with [label = "\nTunnel"] [
-    create-link-with one-of turtles with [label = "\nFalls"]
     create-link-with one-of turtles with [label = "\nAqua"]
   ]
 
@@ -232,7 +230,7 @@ to update-attraction-labels
     let base-label attraction-name
 
     ; Always show the basic queue length
-    let q-label (word "Q:" length queue)
+    let q-label (word "Q:" (length queue * 3)) 
 
     ; Initialize express and virtual queue labels as empty strings
     let e-label ""
@@ -240,10 +238,10 @@ to update-attraction-labels
 
     ; Conditionally add details to the label based on the queue-mode
     if queue-mode = "express" or queue-mode = "priority" [
-      set e-label (word "|E:" length express-queue)
+      set e-label (word "|E:" (length express-queue * 3))
     ]
     if queue-mode = "priority" [
-      set v-label (word "|V:" length virtual-queue)
+      set v-label (word "|V:" (length virtual-queue * 3))
     ]
 
     ; Combine the parts to form the final label

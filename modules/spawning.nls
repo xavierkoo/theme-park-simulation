@@ -57,7 +57,7 @@ to spawning-visitors [number-of-visitors]
     set shape "person"
     set size 0.8
     setxy 0 -28 ; default position
-    set walking-speed 2
+    set walking-speed 1
     set path []
     set isWaiting false
     set waitTime 0
@@ -90,7 +90,7 @@ to spawning-visitors [number-of-visitors]
     ifelse archetype = "Ride Fanatic" [
       ; Ride Fanatic
       set color violet
-      set patience-level 60 + random 20 ; Ride Fanatics have high queue patience
+      set patience-level 24 + random 10 ; Ride Fanatics have high queue patience
       set expected-attractions-rate random 3 + 5 ; Ride Fanatics expect to visit more attractions
       set staying-time random-normal 10 2 ; Ride Fanatics tend to spend the most time
       set repeat-ride? one-of [true true true true] ; Ride Fanatics absolutely likely to repeat rides
@@ -100,7 +100,7 @@ to spawning-visitors [number-of-visitors]
       ifelse archetype = "Ride Enthusiast" [
         ; Ride Enthusiast
         set color red
-        set patience-level 50 + random 20 ; Ride Enthusiasts have moderate queue patience
+        set patience-level 21 + random 10 ; Ride Enthusiasts have moderate queue patience
         set expected-attractions-rate random 3 + 4 ; Ride Enthusiasts expect to visit moderate attractions
         set staying-time random-normal 9 2 ; Ride Enthusiasts spend more time
         set repeat-ride? one-of [true true true false] ; Ride Enthusiasts likely to repeat rides
@@ -110,7 +110,7 @@ to spawning-visitors [number-of-visitors]
         ifelse archetype = "Average Visitor" [
           ; Average Visitor
           set color pink
-          set patience-level 40 + random 20 ; Average Visitors have reasonable queue patience
+          set patience-level 18 + random 10 ; Average Visitors have reasonable queue patience
           set expected-attractions-rate random 3 + 3 ; Average Visitors expect to visit fewer attractions
           set staying-time random-normal 8 2 ; Average Visitors spend average time
           set repeat-ride? one-of [true true false false] ; Average Visitors may or may not repeat rides
@@ -120,7 +120,7 @@ to spawning-visitors [number-of-visitors]
           ifelse archetype = "Leisure Enjoyer" [
             ; Leisure Enjoyer
             set color sky
-            set patience-level 30 + random 20 ; Leisure Enjoyers have low queue patience
+            set patience-level 15 + random 10; Leisure Enjoyers have low queue patience
             set expected-attractions-rate random 3 + 2 ; Leisure Enjoyers expect to visit very few attractions
             set staying-time random-normal 7 2 ; Leisure Enjoyers tend to spend less time
             set repeat-ride? one-of [true false false false] ; Leisure Enjoyers rarely repeat rides
@@ -130,7 +130,7 @@ to spawning-visitors [number-of-visitors]
             ifelse archetype = "Passive Sightseer" [
               ; Passive Sightseer
               set color cyan
-              set patience-level 20 + random 20 ; Passive Sightseers have somewhat reasonable queue patience
+              set patience-level 12 + random 10 ; Passive Sightseers have somewhat reasonable queue patience
               set expected-attractions-rate random 3 + 1 ; Passive Sightseers expect to visit few attractions
               set staying-time random-normal 8 2 ; Passive Sightseers tend to spend average time
               set repeat-ride? one-of [false false false false] ; Passive Sightseers do not repeat rides
@@ -139,7 +139,7 @@ to spawning-visitors [number-of-visitors]
             ] [
               ; null (follows Average Visitor)
               set color pink
-              set patience-level 40 + random 20 ; Average Visitors have reasonable queue patience
+              set patience-level 18 + random 10 ; Average Visitors have reasonable queue patience
               set expected-attractions-rate random 3 + 3 ; Average Visitors expect to visit fewer attractions
               set staying-time random-normal 8 2 ; Average Visitors spend average time
               set repeat-ride? one-of [true true false false] ; Average Visitors may or may not repeat rides
@@ -160,6 +160,6 @@ to spawning-visitors-now
   if ticks < closing-time[
     let current-mean item (floor (ticks / 31)) arrival-means
     let value random-poisson current-mean
-    spawning-visitors value
+    spawning-visitors (value / 3)
   ]
 end

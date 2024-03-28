@@ -195,12 +195,12 @@ true
 true
 "" ""
 PENS
-"Total" 1.0 0 -16777216 true "" "plot count visitors"
-"Ride Fanatic" 1.0 0 -8630108 true "" "plot count visitors with [color = violet]"
-"Ride Enthusiast" 1.0 0 -2674135 true "" "plot count visitors with [color = red]"
-"Average Visitor" 1.0 0 -2064490 true "" "plot count visitors with [color = pink]"
-"Leisure Enjoyer" 1.0 0 -13791810 true "" "plot count visitors with [color = sky]"
-"Passive Sightseer" 1.0 0 -11221820 true "" "plot count visitors with [color = cyan]"
+"Total" 1.0 0 -16777216 true "" "plot count visitors * 3"
+"Ride Fanatic" 1.0 0 -8630108 true "" "plot count visitors with [color = violet] * 3"
+"Ride Enthusiast" 1.0 0 -2674135 true "" "plot count visitors with [color = red] * 3"
+"Average Visitor" 1.0 0 -2064490 true "" "plot count visitors with [color = pink] * 3"
+"Leisure Enjoyer" 1.0 0 -13791810 true "" "plot count visitors with [color = sky] * 3"
+"Passive Sightseer" 1.0 0 -11221820 true "" "plot count visitors with [color = cyan] * 3"
 
 MONITOR
 205
@@ -208,7 +208,7 @@ MONITOR
 352
 186
 Current Visitor Count
-count visitors
+count visitors * 3
 17
 1
 11
@@ -249,6 +249,7 @@ PENS
 "Average Visitor" 1.0 0 -2064490 true "" ""
 "Leisure Enjoyer" 1.0 0 -13791810 true "" ""
 "Passive Sightseer" 1.0 0 -11221820 true "" ""
+"Overall" 1.0 0 -16777216 true "" ""
 
 SLIDER
 426
@@ -258,8 +259,8 @@ SLIDER
 satisfaction-modifier
 satisfaction-modifier
 0
-1
-1.0
+2
+2.0
 0.1
 1
 NIL
@@ -344,13 +345,13 @@ PLOT
 767
 419
 1006
-Average Wait Time by Archetype
+Average Wait Time Per Attraction
 Time
 Time Spent In Queue
 0.0
 10.0
 0.0
-100.0
+20.0
 true
 true
 "" ""
@@ -360,6 +361,7 @@ PENS
 "Average Visitor" 1.0 0 -2064490 true "" ""
 "Leisure Enjoyer" 1.0 0 -13791810 true "" ""
 "Passive Sightseer" 1.0 0 -11221820 true "" ""
+"Overall" 1.0 0 -16777216 true "" ""
 
 @#$#@#$#@
 ## WHAT IS IT?
