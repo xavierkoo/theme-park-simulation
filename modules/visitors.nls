@@ -10,7 +10,6 @@ visitors-own [
   patience-level ; baulking point, max queue time of visitor, influenced by attraction(pops) and archetype.
   satisfaction-level ; threshold for determining whether visitor stays in the park influenced by archetype and expected-attractions-rate
   expected-attractions-rate ; number of attractions visitors expects to take part in by the end of the day influenced by archetype
-  staying-time ; duration of visitors staying in the park.
   repeat-ride? ; boolean, whether visitor repeats the ride
   visited-attractions ; list of visited attractions
   priority-pass-usage-limit ; value 1-99(unlimited) max number of pass a visitor can get in a visit
@@ -62,6 +61,7 @@ to visitor-make-decisions
         visitor-create-path
         set decision-made? true
         set going-home? true
+        set visitors-left-early visitors-left-early + 1
         stop
       ]
       
@@ -146,9 +146,7 @@ to visitor-make-decisions
           ] [
             ; If not repeating or haven't visited this ride before, proceed normally
             ifelse not member? chosen-ride visited-attractions [
-              if not isPriorityPassActive? [
-                set visited-attractions lput chosen-ride visited-attractions
-              ]
+              set visited-attractions lput chosen-ride visited-attractions
               set next-destination one-of attractions with [attraction-name = chosen-ride]
               let destination-queue-length length [queue] of next-destination
               let destination-virtual-queue-length length [virtual-queue] of next-destination

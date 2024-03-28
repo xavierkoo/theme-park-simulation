@@ -3,6 +3,7 @@ __includes ["modules/attractions.nls" "modules/visitors.nls" "modules/spawning.n
 ; Setup the environment
 globals [
   isPriorityPassActive? ; boolean to indicate whether priority
+  visitors-left-early ; count of the number of visitors that left early due to satisfaction below threshold
 ]
 
 ; Setup the simulation
@@ -19,6 +20,7 @@ to setup
   set-default-shape turtles "square"  ; Default shape for rides
   set paths-map []
   set isPriorityPassActive? queue-mode = "priority"
+  set visitors-left-early 0
   reset-ticks
 
 end
@@ -362,6 +364,17 @@ PENS
 "Leisure Enjoyer" 1.0 0 -13791810 true "" ""
 "Passive Sightseer" 1.0 0 -11221820 true "" ""
 "Overall" 1.0 0 -16777216 true "" ""
+
+MONITOR
+990
+737
+1123
+782
+Unsatisfied Visitors
+visitors-left-early
+17
+1
+11
 
 @#$#@#$#@
 ## WHAT IS IT?

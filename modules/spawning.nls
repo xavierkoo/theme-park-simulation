@@ -92,7 +92,6 @@ to spawning-visitors [number-of-visitors]
       set color violet
       set patience-level 24 + random 10 ; Ride Fanatics have high queue patience
       set expected-attractions-rate random 3 + 5 ; Ride Fanatics expect to visit more attractions
-      set staying-time random-normal 10 2 ; Ride Fanatics tend to spend the most time
       set repeat-ride? one-of [true true true true] ; Ride Fanatics absolutely likely to repeat rides
       set attraction-pref 0.7 ; Ride Fanatics have a high preference for rides
       set decision-made? false
@@ -102,7 +101,6 @@ to spawning-visitors [number-of-visitors]
         set color red
         set patience-level 21 + random 10 ; Ride Enthusiasts have moderate queue patience
         set expected-attractions-rate random 3 + 4 ; Ride Enthusiasts expect to visit moderate attractions
-        set staying-time random-normal 9 2 ; Ride Enthusiasts spend more time
         set repeat-ride? one-of [true true true false] ; Ride Enthusiasts likely to repeat rides
         set attraction-pref 0.6 ; Ride Enthusiasts have a slightly higher preference for rides
         set decision-made? false
@@ -112,7 +110,6 @@ to spawning-visitors [number-of-visitors]
           set color pink
           set patience-level 18 + random 10 ; Average Visitors have reasonable queue patience
           set expected-attractions-rate random 3 + 3 ; Average Visitors expect to visit fewer attractions
-          set staying-time random-normal 8 2 ; Average Visitors spend average time
           set repeat-ride? one-of [true true false false] ; Average Visitors may or may not repeat rides
           set attraction-pref 0.5 ; Average Visitors have no preference
           set decision-made? false
@@ -122,7 +119,6 @@ to spawning-visitors [number-of-visitors]
             set color sky
             set patience-level 15 + random 10; Leisure Enjoyers have low queue patience
             set expected-attractions-rate random 3 + 2 ; Leisure Enjoyers expect to visit very few attractions
-            set staying-time random-normal 7 2 ; Leisure Enjoyers tend to spend less time
             set repeat-ride? one-of [true false false false] ; Leisure Enjoyers rarely repeat rides
             set attraction-pref 0.4 ; Leisure Enjoyers have a slightly higher preference for activities
             set decision-made? false
@@ -132,7 +128,6 @@ to spawning-visitors [number-of-visitors]
               set color cyan
               set patience-level 12 + random 10 ; Passive Sightseers have somewhat reasonable queue patience
               set expected-attractions-rate random 3 + 1 ; Passive Sightseers expect to visit few attractions
-              set staying-time random-normal 8 2 ; Passive Sightseers tend to spend average time
               set repeat-ride? one-of [false false false false] ; Passive Sightseers do not repeat rides
               set attraction-pref 0.3 ; Passive Sightseers have a high preference for activities
               set decision-made? false
@@ -141,7 +136,6 @@ to spawning-visitors [number-of-visitors]
               set color pink
               set patience-level 18 + random 10 ; Average Visitors have reasonable queue patience
               set expected-attractions-rate random 3 + 3 ; Average Visitors expect to visit fewer attractions
-              set staying-time random-normal 8 2 ; Average Visitors spend average time
               set repeat-ride? one-of [true true false false] ; Average Visitors may or may not repeat rides
               set attraction-pref 0.5 ; Average Visitors have no preference
               set decision-made? false
