@@ -220,7 +220,7 @@ closing-time
 closing-time
 50
 1000
-300.0
+250.0
 50
 1
 NIL
@@ -257,7 +257,7 @@ satisfaction-modifier
 satisfaction-modifier
 0
 1
-1.0
+0.5
 0.1
 1
 NIL
@@ -272,7 +272,7 @@ satisfaction-threshold
 satisfaction-threshold
 0
 100
-50.0
+60.0
 1
 1
 NIL
@@ -286,7 +286,7 @@ CHOOSER
 queue-mode
 queue-mode
 "basic" "express" "priority"
-2
+0
 
 PLOT
 7
@@ -331,7 +331,7 @@ priority-pass-limit
 priority-pass-limit
 0
 100
-20.0
+100.0
 1
 1
 NIL

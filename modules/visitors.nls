@@ -114,9 +114,11 @@ to visitor-make-decisions
           ifelse repeat-ride? and member? chosen-ride visited-attractions [
             ; Logic to handle repeating a ride
             set next-destination one-of attractions with [attraction-name = chosen-ride]
+            let destination-queue-length length [queue] of next-destination
+            let destination-virtual-queue-length length [virtual-queue] of next-destination
             visitor-create-path
             
-            if isPriorityPassActive? and length priority-pass = 0[
+            if isPriorityPassActive? and length priority-pass = 0 and destination-virtual-queue-length < destination-queue-length[
               visitor-check-virtual-queue
               stop
             ]
@@ -132,7 +134,7 @@ to visitor-make-decisions
                 if queue-length < patience-level [
                   let fillerRideTime 0
                   ask next-destination [
-                    set fillerRideTime ticks + ((queue-length / (capacity * 0.80)) *  service-rate + 75) ; 75 for the longest path possible to a filler ride and to priority pass ride
+                    set fillerRideTime ticks + ((queue-length / (capacity * 0.80)) *  ride-length + 30) ; 30 for the longest path possible to a filler ride and to priority pass ride
                   ]
                   if fillerRideTime > item 1 priority-pass [
                     stop
@@ -148,8 +150,11 @@ to visitor-make-decisions
                 set visited-attractions lput chosen-ride visited-attractions
               ]
               set next-destination one-of attractions with [attraction-name = chosen-ride]
+              let destination-queue-length length [queue] of next-destination
+              let destination-virtual-queue-length length [virtual-queue] of next-destination
               visitor-create-path
-              if isPriorityPassActive? and length priority-pass = 0 [
+              
+              if isPriorityPassActive? and length priority-pass = 0 and destination-virtual-queue-length < destination-queue-length[
                 visitor-check-virtual-queue
                 stop
               ]
@@ -165,7 +170,7 @@ to visitor-make-decisions
                   if queue-length < patience-level [
                     let fillerRideTime 0
                     ask next-destination [
-                      set fillerRideTime ticks + ((queue-length / (capacity * 0.80)) *  service-rate + 75) ; 75 for the longest path possible to a filler ride and to priority pass ride
+                      set fillerRideTime ticks + ((queue-length / (capacity * 0.80)) *  ride-length + 30) ; 30 for the longest path possible to a filler ride and to priority pass ride
                     ]
                     if fillerRideTime > item 1 priority-pass [
                       stop
@@ -226,8 +231,11 @@ to visitor-make-decisions
           ifelse repeat-ride? and member? chosen-activity visited-attractions [
             ; Logic to handle repeating a ride
             set next-destination one-of attractions with [attraction-name = chosen-activity]
+            let destination-queue-length length [queue] of next-destination
+            let destination-virtual-queue-length length [virtual-queue] of next-destination
             visitor-create-path
-            if isPriorityPassActive? and length priority-pass = 0[
+            
+            if isPriorityPassActive? and length priority-pass = 0 and destination-virtual-queue-length < destination-queue-length[
               visitor-check-virtual-queue
               stop
             ]
@@ -243,7 +251,7 @@ to visitor-make-decisions
                 if queue-length < patience-level [
                   let fillerRideTime 0
                   ask next-destination [
-                    set fillerRideTime ticks + ((queue-length / (capacity * 0.80)) *  service-rate + 75) ; 75 for the longest path possible to a filler ride and to priority pass ride
+                    set fillerRideTime ticks + ((queue-length / (capacity * 0.80)) *  ride-length + 30) ; 30 for the longest path possible to a filler ride and to priority pass ride
                   ]
                   if fillerRideTime > item 1 priority-pass [
                     stop
@@ -258,8 +266,11 @@ to visitor-make-decisions
                 set visited-attractions lput chosen-activity visited-attractions
               ]
               set next-destination one-of attractions with [attraction-name = chosen-activity]
+              let destination-queue-length length [queue] of next-destination
+              let destination-virtual-queue-length length [virtual-queue] of next-destination
               visitor-create-path
-              if isPriorityPassActive? and length priority-pass = 0[
+              
+              if isPriorityPassActive? and length priority-pass = 0 and destination-virtual-queue-length < destination-queue-length[
                 visitor-check-virtual-queue
                 stop
               ]
@@ -275,7 +286,7 @@ to visitor-make-decisions
                   if queue-length < patience-level [
                     let fillerRideTime 0
                     ask next-destination [
-                      set fillerRideTime ticks + ((queue-length / (capacity * 0.80)) *  service-rate + 75) ; 75 for the longest path possible to a filler ride and to priority pass ride
+                      set fillerRideTime ticks + ((queue-length / (capacity * 0.80)) *  ride-length + 30) ; 30 for the longest path possible to a filler ride and to priority pass ride
                     ]
                     if fillerRideTime > item 1 priority-pass [
                       stop
@@ -394,19 +405,21 @@ to visitor-check-queue
   let current-virtual-queue [virtual-queue] of current-location
   let virtual-visitor nobody
   
-  if length current-virtual-queue != 0 [
+  if virtual-queue-length != 0 [
     let my-index position myself current-virtual-queue
     if my-index != false [
       ; If found, set virtual-visitor to myself
       set virtual-visitor myself
-      set priority-pass []
     ]
   ]
   
   ifelse queue-mode = "priority"[
-    ifelse virtual-visitor != nobody[
+    ifelse virtual-visitor != nobody [
       ask current-location [
-        set virtual-queue remove-item position virtual-visitor virtual-queue virtual-queue
+        let index position virtual-visitor virtual-queue
+        if index != false [ ; Ensure the item was found in the list
+          set virtual-queue remove-item index virtual-queue
+        ]
         set virtual-waiting-count length virtual-queue
         set express-queue lput myself express-queue
         set express-waiting-count length express-queue
@@ -473,7 +486,7 @@ to visitor-check-virtual-queue
       
       set virtual-queue lput myself virtual-queue
       set virtual-waiting-count length virtual-queue
-      set returnTime ticks + ((virtual-queue-length / (capacity * 0.80)) *  service-rate )
+      set returnTime ticks + ((virtual-queue-length / (capacity * 0.80)) *  ride-length )
     ]
     set priority-pass lput returnTime priority-pass
     set priority-pass fput [attraction-name] of next-destination priority-pass

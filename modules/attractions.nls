@@ -8,7 +8,7 @@ breed [entrances entrance]
 attractions-own [
   attraction-type ; "ride" or "activity". Determines the type of attraction, affecting how visitors interact with it.
   popularity ; A numeric value indicating its popularity. Higher values may influence visitor preferences or queue lengths.
-  service-rate ; How fast the attraction can serve visitors, e.g., ride duration or activity length. Affects how quickly the queue moves.
+  ride-length ; How long a ride takes
   waiting-count ; Number of visitors currently waiting in the queue for this attraction.
   queue ; List of visitors waiting for this attraction. Used to manage the order and number of visitors.
   attraction-name ; The name of the attraction. Used for identification and possibly displayed in the simulation interface.
@@ -68,7 +68,7 @@ to attraction-create-rides
       set color green
       set label (word "\n" r)
       set label-color white
-      set service-rate item 3 p ; RENAME!!!!! IT'S NOT SERVICE RATE BUT ACTUAL RIDE TIME
+      set ride-length item 3 p ; RENAME!!!!! IT'S NOT SERVICE RATE BUT ACTUAL RIDE TIME
       set waiting-count 0
       set queue [] ; Initialize the queue as an empty list
       set ride-capacity [] ; 
@@ -89,7 +89,7 @@ end
 ; Procedure to create activities
 to attraction-create-activities
   let activities ["Enchanted" "Hunt" "Wizard" "Observatory" "Maze" "Robotics" "Carnival"]
-  let positions [[28 20 5 10] [-28 20 10 20] [28 -8 10 15] [-20 5 10 15] [20 25 5 20] [-28 -8 10 10] [0 15 10 15]]
+  let positions [[28 20 5 10] [-28 20 10 20] [25 -10 10 15] [-20 5 10 15] [20 25 5 20] [-28 -8 10 10] [0 15 10 15]]
 
   (foreach activities positions [
     [a p] ->
@@ -103,7 +103,7 @@ to attraction-create-activities
       set size 3
       set shape "triangle"
       set color yellow
-      set service-rate item 2 p
+      set ride-length item 2 p
       set waiting-count 0
       set queue [] ; Initialize the queue as an empty list
       set ride-capacity [] ; 
@@ -204,7 +204,7 @@ to update-queues
     
     if not empty? ride-capacity  [
       if ride-time = -1 [
-        set ride-time service-rate ; Reset the ride time for the next cycle
+        set ride-time ride-length ; Reset the ride time for the next cycle
       ]
       if ride-time > 0 [
         set ride-time ride-time - 1  ; Decrement the ride time
@@ -223,9 +223,6 @@ to update-queues
         set ride-time -1 ; Reset the ride time for the next cycle
       ]
     ] 
-    if isPriorityPassActive? and length queue > (capacity * 3)[
-      
-    ]
   ]
 end
 
@@ -235,7 +232,7 @@ to update-attraction-labels
     let base-label attraction-name
 
     ; Always show the basic queue length
-    let q-label (word "Q: " length queue)
+    let q-label (word "Q:" length queue)
 
     ; Initialize express and virtual queue labels as empty strings
     let e-label ""
@@ -243,10 +240,10 @@ to update-attraction-labels
 
     ; Conditionally add details to the label based on the queue-mode
     if queue-mode = "express" or queue-mode = "priority" [
-      set e-label (word "|E: " length express-queue)
+      set e-label (word "|E:" length express-queue)
     ]
     if queue-mode = "priority" [
-      set v-label (word "|V: " length virtual-queue)
+      set v-label (word "|V:" length virtual-queue)
     ]
 
     ; Combine the parts to form the final label
