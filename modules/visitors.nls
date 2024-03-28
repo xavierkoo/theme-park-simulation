@@ -22,7 +22,7 @@ visitors-own [
   current-location-name; (Attraction Name)
   next-destination ; (Attraction Agent) where the visitor is currently headed to
   isWaiting ; boolean indicating if the turtle is waiting in a queue
-  waitTime ; how long the turtle has been waiting
+  waitTime ; cumulative time in ticks visitor has spent waiting
   path
   moving;
   next-dest-name 
@@ -552,6 +552,15 @@ to visitor-update-satisfaction
         ]
       ]
       ; No change if the visitor has met the expected number exactly
+    ]
+  ]
+end
+
+; update visitor's wait time counter
+to visitor-update-wait-time
+  ask visitors [
+    if isWaiting = true [
+      set waitTime waitTime + 1
     ]
   ]
 end
