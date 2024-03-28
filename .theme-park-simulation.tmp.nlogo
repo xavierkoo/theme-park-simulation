@@ -288,7 +288,7 @@ CHOOSER
 queue-mode
 queue-mode
 "basic" "express" "priority"
-2
+1
 
 PLOT
 6
