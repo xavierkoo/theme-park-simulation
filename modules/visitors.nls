@@ -413,8 +413,8 @@ to visitor-check-queue
     ]
   ]
   
-  ifelse queue-mode = "priority"[
-    ifelse virtual-visitor != nobody [
+  if queue-mode = "priority"[
+    ifelse virtual-visitor != nobody[
       ask current-location [
         let index position virtual-visitor virtual-queue
         if index != false [ ; Ensure the item was found in the list
@@ -446,35 +446,66 @@ to visitor-check-queue
   ]
   
   
-  [
-    ifelse queue-length < patience-level or (express-queue-length / 4 < patience-level and isExpress?)[
-      ; If queue is longer than patience level, decide not to join and make a new decision
-      ; If queue is within patience level, join the queue
-      ifelse express-queue-length / 4 < queue-length and isExpress?
-      [
-        ask current-location [
-          set express-queue lput myself express-queue
-          set express-waiting-count length express-queue
-        ]
+  
+  if queue-length < patience-level and queue-mode = "basic"[
+    ; If queue is longer than patience level, decide not to join and make a new decision
+    ; If queue is within patience level, join the queue
+    
+    
+    ifelse queue-length < patience-level [
+      ask current-location [
+        set queue lput myself queue
+        set waiting-count length queue
       ]
-      [
-        ifelse queue-length < patience-level [
-          ask current-location [
-            set queue lput myself queue
-            set waiting-count length queue
-          ]
-        ][
-          set decision-made? false
-          stop
-        ]
-      ]
-      set isWaiting true
-      
-    ] [
-      ; If queue is longer than patience level, decide not to join and make a new decision
+    ][
       set decision-made? false
+      stop
     ]
+    
+    set isWaiting true
   ]
+  
+  
+  
+  if queue-mode = "express"[
+    if isExpress? [
+      ask current-location [
+        set express-queue lput myself express-queue
+        set express-waiting-count length express-queue
+      ]
+      set decision-made? false
+      set isWaiting true
+      stop
+    ]
+
+    
+    
+    ifelse express-queue-length > 0 [
+      ifelse queue-length * 1.2 < patience-level[
+        ask current-location [
+          set queue lput myself queue
+          set waiting-count length queue
+        ]
+      ]
+      [
+        set decision-made? false
+        stop
+      ]
+    ][
+      ifelse queue-length < patience-level[
+        ask current-location [
+          set queue lput myself queue
+          set waiting-count length queue
+        ]
+      ]   
+      [
+        set decision-made? false
+        stop
+      ]
+    ] 
+    set isWaiting true
+  ]
+
 end
 
 ; Check the virtual queue of the attraction for when priority pass is in use
