@@ -76,9 +76,6 @@ to spawning-visitors [number-of-visitors]
       [ set isExpress? true ] 
       [ set isExpress? false ]
     ] 
-    if queue-mode = "piority"[
-      set isExpress? true
-    ] 
     
     ; Assign visitor archetype + properties that are not affected by archetype
     set priority-pass-usage-limit priority-pass-limit
