@@ -8,7 +8,7 @@ globals [
  
 ; Create the RF table for determining visitor archetype
 to spawning-visitor-mix
-  set arrival-means [5 7 8 7 6 6 6 5 5]
+  set arrival-means [6 8 9 8 7 7 7 6 6]
   set visitor-archetypes ["Ride Fanatic" "Ride Enthusiast" "Average Visitor" "Leisure Enjoyer" "Passive Sightseer"]
   let archetype-prob (list fanatic-prob enthu-prob average-prob leisure-prob passive-prob) ; Adjustable by sliders
 
