@@ -55,7 +55,7 @@ to visitor-make-decisions
         [0 20 false] [0 25 false] [-13 5 false] [20 5 false]]
       
       ; Check if the visitor's satisfaction level is below the threshold
-      if satisfaction-level < 50 [
+      if satisfaction-level < satisfaction-threshold [
         ;        print("Going Home, Not Satisfied")
         set next-destination one-of turtles with [label = "\nEntrance"]
         visitor-create-path
