@@ -98,7 +98,7 @@ fanatic-prob
 fanatic-prob
 0
 100
-15.0
+90.0
 1
 1
 NIL
@@ -158,7 +158,7 @@ passive-prob
 passive-prob
 0
 100
-15.0
+100.0
 1
 1
 NIL
@@ -379,39 +379,88 @@ visitors-left-early
 @#$#@#$#@
 ## WHAT IS IT?
 
-(a general understanding of what the model is trying to show or explain)
+The model creates a simulation of an amusement park, focusing on the dynamics of visitor movement and queue management within such an environment. It will model various attractions with differing levels of popularity and simulate the behaviours of varying archetypes of visitors. The simulation will incorporate different queueing strategies, including systems such as virtual or privileged express queues, to analyse and optimise the flow of visitors. By integrating these elements, the simulation seeks to provide insights into queue management, enhance visitor experience, and improve operational efficiency within amusement parks.
+
 
 ## HOW IT WORKS
 
-(what rules the agents use to create the overall behavior of the model)
+The visitor makes decision to join attractions based on their archetype and the queue-mode. 
+
 
 ## HOW TO USE IT
 
-(how to use the model, including a description of each of the items in the Interface tab)
+setup (button) - creates the theme park (entrance, attractions, activity and pathways.
+
+queue-mode(chooser) - choose the basic, express and priority queue.
+
+passive-prob, leisure-prob, average-prob, enthu-prob and fanatic-prob(sliders) - the five archetypes mix. 
+
+closing-time(slider) - represents the opening hours of the theme park 250 tick = 9 hours
+
+express-prob(slider) - when "express" is choosen in the queue-mode, represents the chance of a visitor owning an express pass.
+
+priority-pass-limit(slider) - when "priority" is choosen in the queue-mode. The maximum number of priority passes an attractions issues.
+
+satisfaction-threshold(slider) - the point where the visitors will leave the theme park if their satisfaction falls below the satisfaction-threshold.
+
+satisfaction-modifier(slider) - the uility the visitors gets when they successfully finish the attraction. Decreases when the visitors fail to get their ride.
+
+current visitor count(monitor) - a live update of the total current visitors in the park.
+
+unsatsified visitors(monitor) - a live update of the total unsatisfied visitors that visited the park.
+
+number of park visitors(plot) - a live update on number visitors by archetype
+
+average satisfaction levels by archetype(plot) - a live update on the average satisfaction by archetype.
+
+Average Satisfaction Of Normal and Express Pass Holders(plot) - when "express" is choosen in the queue-mode, compares the average satisfaction between the Normal and Express Pass Holders.
+
 
 ## THINGS TO NOTICE
 
-(suggested things for the user to notice while running the model)
+Attractions: 
+Ride (eg. rollercoaster) represented by green squares and 4 rides are pre-defined as popular for all visitors.
+
+Activity (eg. meet & greet) represented by yellow triangle and all activities are equally popular for all visitors.
+
+Each of the attactions contains the queue length (Q: basic queue, E: express queue, V: virtual queue).
+
+Park Entrance:
+All visitors start from here upon arrival and end here to leave.
+
+Pathways:
+Represented by links, visitors can only travel along them to explore.
+
 
 ## THINGS TO TRY
 
-(suggested things for the user to try to do (move sliders, switches, etc.) with the model)
+queue-mode(chooser) - choose the basic, express and priority queue. 
+
+passive-prob, leisure-prob, average-prob, enthu-prob and fanatic-prob - the five archetypes mix.
+
+closing-time(slider) - represents the opening hours of the theme park 250 tick = 9 hours
+
+express-prob(slider) - when "express" is choosen in the queue-mode, represents the chance of a visitor owning an express pass.
+
+priority-pass-limit(slider) - when "priority" is choosen in the queue-mode. The maximum number of priority passes an attractions issues.
+
+satisfaction-threshold(slider) - the point where the visitors will leave the theme park if their satisfaction falls below the satisfaction-threshold.
+
 
 ## EXTENDING THE MODEL
 
 (suggested things to add or change in the Code tab to make the model more complicated, detailed, accurate, etc.)
 
-## NETLOGO FEATURES
+Simulated Agent Simplification: Increase variety of simulated agent types, including age variation and purchasing power.
 
-(interesting or unusual features of NetLogo that the model uses, particularly in the Code tab; or where workarounds were needed for missing features)
+Static Environment Assumption: Implement adjustable possibility of attraction downtime and navigation delays into simulation.
 
-## RELATED MODELS
+Lacking Physical Interactions: Add visitor types that arrive and decide in groups, emulating family gatherings or friend outings.
 
-(models in the NetLogo Models Library and elsewhere which are of related interest)
+Predictability of Visitor Arrivals Introduce Poisson distribution data for different days of the week, annual seasons, and notable calendar event days.
 
-## CREDITS AND REFERENCES
+Simple Attraction Popularity Effect: Add attraction tags and visitor preference tags (eg. wet, thrill, scenic, sky-high, branded, etc.) that can be matched and affected by the weather or time of day. Additionally, allow all attractions to have adjustable general popularity effects to emulate social media to a certain extent.
 
-(a reference to the model's URL on the web if it has one, as well as any other necessary credits, citations, and links)
 @#$#@#$#@
 default
 true

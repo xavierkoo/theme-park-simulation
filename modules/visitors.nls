@@ -5,9 +5,9 @@ globals [ 
 breed [visitors visitor]
 
 visitors-own [
-  archetype
-  walking-speed
-  patience-level ; baulking point, max queue time of visitor, influenced by attraction(pops) and archetype.
+  archetype ; characteristics of the visitor
+  walking-speed ; how fast/slow the visitor walks
+  patience-level ; baulking point, max queue time of visitor, influenced by attraction(popularity) and archetype.
   satisfaction-level ; threshold for determining whether visitor stays in the park influenced by archetype and expected-attractions-rate
   expected-attractions-rate ; number of attractions visitors expects to take part in by the end of the day influenced by archetype
   repeat-ride? ; boolean, whether visitor repeats the ride
@@ -22,12 +22,12 @@ visitors-own [
   next-destination ; (Attraction Agent) where the visitor is currently headed to
   isWaiting ; boolean indicating if the turtle is waiting in a queue
   waitTime ; cumulative time in ticks visitor has spent waiting
-  path
-  moving;
-  next-dest-name 
-  go-home-counter
-  go-home-threshold
-  isExpress?
+  path ; the route for a visitor go from point A to B
+  isMoving; ; boolean whether the visitor is traveling to its destination
+  next-dest-name ; stores the next destination name (can be an attraction or entrance)
+  go-home-counter ; visitor cannot make a decision for any attraction stores the counts the number of time a row. 
+  go-home-threshold ; if go-home-counter > go-home-threshold the visitor will leave the park
+  isExpress? ; boolean if the visitor owns the express pass
   priority-pass; list to store visitor's current priority pass and time to return 
 ]
 
@@ -88,7 +88,6 @@ to visitor-make-decisions
           set cumulative-ride-probabilities lput (last cumulative-ride-probabilities + p) cumulative-ride-probabilities
         ]
         
-        ;        print(word "Ride:" cumulative-ride-probabilities)
         
         ; Generate a random threshold to choose a ride based on weighted probabilities
         let threshold random-float last cumulative-ride-probabilities
@@ -321,7 +320,7 @@ to visitor-move-to-attraction
     ] [
       ; The visitor is not waiting and should move towards the next destination.
       if not empty? path [
-        if not moving [
+        if not isMoving [
           set next-dest-name first path 
           let nd next-dest-name
           
@@ -332,10 +331,10 @@ to visitor-move-to-attraction
               print (word "next-dest-name " next-dest-name " not found.")
             ]
           ]
-          set moving true
+          set isMoving true
         ]
         
-        if current-location != nobody and moving [
+        if current-location != nobody and isMoving [
           face current-location
           fd walking-speed 
           if distance current-location < walking-speed [ ; less than walking-speed else visitors might get stuck due to difference in walking speed and arrival sensitivity
@@ -360,7 +359,7 @@ to visitor-move-to-attraction
               set go-home-counter 0
             ]   
             
-            set moving false
+            set isMoving false
           ]
         ]
       ]

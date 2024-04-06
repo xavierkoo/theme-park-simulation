@@ -8,25 +8,20 @@ breed [entrances entrance]
 attractions-own [
   attraction-type ; "ride" or "activity". Determines the type of attraction, affecting how visitors interact with it.
   popularity ; A numeric value indicating its popularity. Higher values may influence visitor preferences or queue lengths.
-  ride-length ; How long a ride takes
+  ride-length ; How long a ride takes.
   waiting-count ; Number of visitors currently waiting in the queue for this attraction.
   queue ; List of visitors waiting for this attraction. Used to manage the order and number of visitors.
   attraction-name ; The name of the attraction. Used for identification and possibly displayed in the simulation interface.
-  attraction-popularity ; A boolean indicating if the attraction is considered popular (true) or not (false). May affect visitor choice.
-  visited ; A flag (usually true/false) indicating whether an attraction has been visited by a visitor. Useful for tracking visitor movement.
-  predecessor ; Refers to the previous attraction visited by a visitor. Can be used to track visitor paths or for analysis purposes.
+  attraction-popularity ; A boolean indicating if the attraction is considered popular (true) or not (false).
+  visited ; A flag (usually true/false) indicating whether an attraction has been visited by a visitor.
+  predecessor ; Refers to the previous attraction visited by a visitor.
   ride-capacity ; A list of visitors currently on the ride or participating in the activity. Indicates how many visitors are being served.
   ride-time ; The remaining time for the current ride or activity session to complete. A countdown to when the next group can be served.
   capacity ; The maximum number of visitors that can be accommodated by the attraction at one time. Influences how many visitors can be moved from the queue to the ride-capacity list.
-  
-  express-queue ;
-  express-waiting-count
-  
-  virtual-queue ;
-  virtual-waiting-count
-  isVirtual?
-  
-  
+  express-queue ; list of visitors in express-queue 
+  express-waiting-count ; length of express-queue
+  virtual-queue ; list of visitors in virtual-queue 
+  virtual-waiting-count ; length of virtual-queue
 ]
 
 entrances-own [

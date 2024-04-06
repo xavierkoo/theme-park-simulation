@@ -63,7 +63,7 @@ to spawning-visitors [number-of-visitors]
     set waitTime 0
     set decision-made? false
     set going-home? false
-    set moving false
+    set isMoving false
     set next-dest-name ""
     set go-home-counter 0
     set go-home-threshold 1
