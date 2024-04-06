@@ -149,7 +149,7 @@ end
 ; Determine number of visitors to spawn on current tick
 to spawning-visitors-now
   if ticks < closing-time[
-    let current-mean item (floor (ticks / 31)) arrival-means
+    let current-mean item (floor (ticks / 30)) arrival-means ; 30 ticks per hour
     let value random-poisson current-mean
     spawning-visitors (value / 3)
   ]
