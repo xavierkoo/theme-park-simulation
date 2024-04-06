@@ -1,6 +1,6 @@
-globals [   
+globals [  
 
-]  
+]
 
 breed [attractions attraction]
 breed [entrances entrance]
@@ -170,8 +170,8 @@ to attraction-create-links
 end
 
 to update-queues
-  
   ask attractions [
+    ; Handle normal and express queue
     if length queue > 0 or length express-queue > 0[
       ; Corrected to increment wait time for the last visitor in the queue
       ; Move visitors from queue to ride-capacity until full or queue is empty
@@ -195,7 +195,7 @@ to update-queues
         ]
       ]
     ]
-    
+    ; Simulate on going ride duration
     if not empty? ride-capacity  [
       if ride-time = -1 [
         set ride-time ride-length ; Reset the ride time for the next cycle

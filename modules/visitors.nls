@@ -56,7 +56,6 @@ to visitor-make-decisions
       
       ; Check if the visitor's satisfaction level is below the threshold
       if satisfaction-level < satisfaction-threshold [
-        ;        print("Going Home, Not Satisfied")
         set next-destination one-of turtles with [label = "\nEntrance"]
         visitor-create-path
         set decision-made? true
@@ -115,11 +114,19 @@ to visitor-make-decisions
             set next-destination one-of attractions with [attraction-name = chosen-ride]
             let destination-queue-length length [queue] of next-destination
             let destination-virtual-queue-length length [virtual-queue] of next-destination
+            let current-capacity [capacity] of next-destination
             visitor-create-path
             
-            if isPriorityPassActive? and length priority-pass = 0 and destination-virtual-queue-length < destination-queue-length[
-              visitor-check-virtual-queue
-              stop
+            if isPriorityPassActive? and length priority-pass = 0[
+              ifelse destination-virtual-queue-length > 0 [
+                if destination-virtual-queue-length  < destination-queue-length / current-capacity * 0.25 [
+                  visitor-check-virtual-queue ; futher checking of priority pass limit and patience level
+                  stop
+                ]
+              ][
+                visitor-check-virtual-queue ; futher checking of priority pass limit and patience level
+                stop
+              ]
             ]
             
             if length priority-pass != 0 [
@@ -150,13 +157,20 @@ to visitor-make-decisions
               set next-destination one-of attractions with [attraction-name = chosen-ride]
               let destination-queue-length length [queue] of next-destination
               let destination-virtual-queue-length length [virtual-queue] of next-destination
+              let current-capacity [capacity] of next-destination
               visitor-create-path
               
-              if isPriorityPassActive? and length priority-pass = 0 and destination-virtual-queue-length < destination-queue-length[
-                visitor-check-virtual-queue
-                stop
+              if isPriorityPassActive? and length priority-pass = 0[
+                ifelse destination-virtual-queue-length > 0 [
+                  if destination-virtual-queue-length  < destination-queue-length / current-capacity * 0.25 [
+                    visitor-check-virtual-queue ; futher checking of priority pass limit and patience level
+                    stop
+                  ]
+                ][
+                  visitor-check-virtual-queue ; futher checking of priority pass limit and patience level
+                  stop
+                ]
               ]
-              
               if length priority-pass != 0 [
                 ifelse ticks + 15 >= item 1 priority-pass [
                   let priority-pass-attraction item 0 priority-pass
@@ -232,11 +246,19 @@ to visitor-make-decisions
             set next-destination one-of attractions with [attraction-name = chosen-activity]
             let destination-queue-length length [queue] of next-destination
             let destination-virtual-queue-length length [virtual-queue] of next-destination
+            let current-capacity [capacity] of next-destination
             visitor-create-path
             
-            if isPriorityPassActive? and length priority-pass = 0 and destination-virtual-queue-length < destination-queue-length[
-              visitor-check-virtual-queue
-              stop
+            if isPriorityPassActive? and length priority-pass = 0[
+              ifelse destination-virtual-queue-length > 0 [
+                if destination-virtual-queue-length  < destination-queue-length / current-capacity * 0.25 [
+                  visitor-check-virtual-queue ; futher checking of priority pass limit and patience level
+                  stop
+                ]
+              ][
+                visitor-check-virtual-queue ; futher checking of priority pass limit and patience level
+                stop
+              ]
             ]
             if length priority-pass != 0 [
               ifelse ticks + 15 >= item 1 priority-pass [
@@ -267,14 +289,20 @@ to visitor-make-decisions
               set next-destination one-of attractions with [attraction-name = chosen-activity]
               let destination-queue-length length [queue] of next-destination
               let destination-virtual-queue-length length [virtual-queue] of next-destination
+              let current-capacity [capacity] of next-destination
               visitor-create-path
               
-              if isPriorityPassActive? and length priority-pass = 0 and destination-virtual-queue-length < destination-queue-length[
-                visitor-check-virtual-queue
-                stop
+              if isPriorityPassActive? and length priority-pass = 0[
+                ifelse destination-virtual-queue-length > 0 [
+                  if destination-virtual-queue-length  < destination-queue-length / current-capacity * 0.25 [
+                    visitor-check-virtual-queue ; futher checking of priority pass limit and patience level
+                    stop
+                  ]
+                ][
+                  visitor-check-virtual-queue ; futher checking of priority pass limit and patience level
+                  stop
+                ]
               ]
-              
-               
               if length priority-pass != 0 [
                 ifelse ticks + 15 >= item 1 priority-pass [
                   let priority-pass-attraction item 0 priority-pass
@@ -406,6 +434,7 @@ to visitor-check-queue
   let current-virtual-queue [virtual-queue] of current-location
   let virtual-visitor nobody
   
+  ; Check and find the visitor in the virtual-queue
   if virtual-queue-length != 0 [
     let my-index position myself current-virtual-queue
     if my-index != false [
@@ -413,9 +442,9 @@ to visitor-check-queue
       set virtual-visitor myself
     ]
   ]
-  
+
   if queue-mode = "priority"[
-    ifelse virtual-visitor != nobody[
+    ifelse virtual-visitor != nobody[ ; transferring virtual-queue to express-queue
       ask current-location [
         let index position virtual-visitor virtual-queue
         if index != false [ ; Ensure the item was found in the list
@@ -427,22 +456,38 @@ to visitor-check-queue
       ]
       set isWaiting true
     ] 
-    
     [
-      ifelse queue-length < patience-level
-      [
-        ask current-location [
-          set queue lput myself queue
-          set waiting-count length queue
-        ]
-        set isWaiting true
+      
+      ask current-location [
+        set queue lput myself queue
+        set waiting-count length queue
       ]
-
-      [
-        ; If queue is longer than patience level, decide not to join and make a new decision
-        set decision-made? false
-        
-      ]
+      set isWaiting true
+      
+;      ifelse express-queue-length > 0 [
+;        ifelse queue-length * 4 < patience-level[ ; add weights for normal queue since express dequeue faster
+;          ask current-location [
+;            set queue lput myself queue
+;            set waiting-count length queue
+;          ]
+;        ]
+;        [
+;          set decision-made? false
+;          stop
+;        ]
+;      ][
+;        ifelse queue-length < patience-level[
+;          ask current-location [
+;            set queue lput myself queue
+;            set waiting-count length queue
+;          ]
+;        ]   
+;        [
+;          set decision-made? false
+;          stop
+;        ]
+;      ] 
+;      set isWaiting true
     ]
   ]
   
@@ -478,11 +523,10 @@ to visitor-check-queue
       set isWaiting true
       stop
     ]
-
-    
     
     ifelse express-queue-length > 0 [
-      ifelse queue-length * 1.2 < patience-level[
+      let current-capacity [capacity] of current-location
+      ifelse (queue-length / current-capacity * 0.25)  < patience-level[ ; add weights for normal queue since express dequeue faster
         ask current-location [
           set queue lput myself queue
           set waiting-count length queue
@@ -515,10 +559,9 @@ to visitor-check-virtual-queue
   ifelse priority-pass-limit > virtual-queue-length and virtual-queue-length < patience-level and length priority-pass = 0 [
     let returnTime 0
     ask next-destination [
-      
       set virtual-queue lput myself virtual-queue
       set virtual-waiting-count length virtual-queue
-      set returnTime ticks + ((virtual-queue-length / (capacity * 0.80)) *  ride-length )
+      set returnTime ticks + ((virtual-queue-length / (capacity * 0.80)) *  ride-length ) ; calculating the return time virtual-queue occupies 80% of the ride capacity
     ]
     set priority-pass lput returnTime priority-pass
     set priority-pass fput [attraction-name] of next-destination priority-pass
@@ -535,7 +578,6 @@ to visitor-update-satisfaction
     let expected-attractions-so-far (expected-attractions-rate / closing-time) * ticks
     ; Check if the visitor has met, exceeded, or not met this expected number
     ifelse length visited-attractions < expected-attractions-so-far [
-      ;      print("Decrease satisfaction")
       ; Decrease satisfaction if fewer attractions visited than expected
       set satisfaction-level satisfaction-level - satisfaction-modifier  ; Adjust the decrease
                                                                          ; Ensure satisfaction level does not go below 0
@@ -544,7 +586,6 @@ to visitor-update-satisfaction
       ]
     ] [
       if length visited-attractions > expected-attractions-so-far [
-        ;        print("Increase satisfaction")
         ; Increase satisfaction if more attractions visited than expected
         set satisfaction-level satisfaction-level + satisfaction-modifier  ; Adjust the increase
                                                                            ; Ensure satisfaction level does not exceed 100
@@ -565,6 +606,671 @@ to visitor-update-wait-time
     ]
   ]
 end
+
+
+
+;
+;
+;globals [   
+;  
+;]  
+;
+;breed [visitors visitor]
+;
+;visitors-own [
+;  archetype ; characteristics of the visitor
+;  walking-speed ; how fast/slow the visitor walks
+;  patience-level ; baulking point, max queue time of visitor, influenced by attraction(popularity) and archetype.
+;  satisfaction-level ; threshold for determining whether visitor stays in the park influenced by archetype and expected-attractions-rate
+;  expected-attractions-rate ; number of attractions visitors expects to take part in by the end of the day influenced by archetype
+;  repeat-ride? ; boolean, whether visitor repeats the ride
+;  visited-attractions ; list of visited attractions
+;  priority-pass-usage-limit ; value 1-99(unlimited) max number of pass a visitor can get in a visit
+;  attraction-pref ; 0.0-1.0 indicates visitors pref for rides of activities (larger number pref for rides)
+;  decision-made? ; boolean, true if the visitor has made a decision on where to go next
+;  going-home?; boolean, true if visitor is going home
+;  
+;  current-location ; (Attraction Agent)
+;  current-location-name; (Attraction Name)
+;  next-destination ; (Attraction Agent) where the visitor is currently headed to
+;  isWaiting ; boolean indicating if the turtle is waiting in a queue
+;  waitTime ; cumulative time in ticks visitor has spent waiting
+;  path ; the route for a visitor go from point A to B
+;  isMoving; ; boolean whether the visitor is traveling to its destination
+;  next-dest-name ; stores the next destination name (can be an attraction or entrance)
+;  go-home-counter ; visitor cannot make a decision for any attraction stores the counts the number of time a row. 
+;  go-home-threshold ; if go-home-counter > go-home-threshold the visitor will leave the park
+;  isExpress? ; boolean if the visitor owns the express pass
+;  priority-pass; list to store visitor's current priority pass and time to return 
+;]
+;
+;to visitor-make-decisions
+;  ask visitors [
+;    if ticks > closing-time [
+;      set next-destination one-of turtles with [label = "\nEntrance"]
+;      visitor-create-path
+;      set decision-made? true
+;      set going-home? true
+;      stop
+;    ]
+;    
+;    if not decision-made? [
+;      ; Get current location of the visitor
+;      let current-xcor xcor
+;      let current-ycor ycor
+;      
+;      ; Define locally activities/rides and their positions
+;      let local-activities ["Enchanted" "Hunt" "Wizard" "Observatory" "Robotics" "Carnival"]
+;      let activities-positions [[28 20] [-28 20] [25 -10] [-20 5] [-28 -8] [0 15]]
+;      
+;      let local-rides ["Thunderbolt" "Carousel" "Aqua" "Skyward" "Flight" "Glide" "Dash" "Voyage" "Tunnel"]
+;      let rides-positions [[-20 -8 true] [-20 20 true] [20 -8 true] [20 20 true] [-20 25 false]
+;        [0 20 false] [0 25 false] [-13 5 false] [20 5 false]]
+;      
+;      ; Check if the visitor's satisfaction level is below the threshold
+;      if satisfaction-level < satisfaction-threshold [
+;        set next-destination one-of turtles with [label = "\nEntrance"]
+;        visitor-create-path
+;        set decision-made? true
+;        set going-home? true
+;        set visitors-left-early visitors-left-early + 1
+;        stop
+;      ]
+;      
+;      ; Determine if the visitor prefers rides or activities and calculate distances
+;      ifelse random-float 1 <= attraction-pref
+;      ; ride chosen
+;      [
+;        ; Calculate distances and apply popularity adjustment
+;        let ride-distances map [p -> distancexy first p last butlast p] rides-positions
+;        let popularity-adjustment map [p -> ifelse-value last p [0.5] [1]] rides-positions ; popularity reduces the distance factor
+;        let adjusted-ride-distances map [pair -> (first pair) * (last pair)] (map list ride-distances popularity-adjustment)
+;        
+;        ; Calculate initial probabilities (not yet normalized)
+;        let ride-probabilities n-values (length adjusted-ride-distances) [i -> 1 - (item i adjusted-ride-distances) / (max adjusted-ride-distances)]
+;        
+;        ; Normalize probabilities so they sum to 1
+;        let total-probability sum ride-probabilities
+;        let normalized-ride-probabilities map [p -> p / total-probability] ride-probabilities
+;        
+;        ; Calculate cumulative probabilities correctly
+;        let cumulative-ride-probabilities (list 0) ; Initialize with 0 to represent the starting point
+;        foreach normalized-ride-probabilities [
+;          p ->
+;          set cumulative-ride-probabilities lput (last cumulative-ride-probabilities + p) cumulative-ride-probabilities
+;        ]
+;        
+;        
+;        ; Generate a random threshold to choose a ride based on weighted probabilities
+;        let threshold random-float last cumulative-ride-probabilities
+;        let chosen-ride-index -1 ; Initialize to an invalid index
+;        
+;        ; Find the index where the threshold is less than the cumulative probability
+;        foreach n-values (length cumulative-ride-probabilities) [i -> i] [
+;          i ->
+;          if threshold < item i cumulative-ride-probabilities and chosen-ride-index = -1 [
+;            set chosen-ride-index i
+;          ]
+;        ]
+;        
+;        ; Adjust for the offset introduced by adding a 0 at the start of cumulative-ride-probabilities
+;        if chosen-ride-index > 0 [
+;          set chosen-ride-index chosen-ride-index - 1
+;        ]
+;        
+;        ; Proceed based on whether a valid ride is chosen
+;        ifelse chosen-ride-index != -1 [
+;          let chosen-ride item chosen-ride-index local-rides
+;          let chosen-ride-position item chosen-ride-index rides-positions
+;          ifelse repeat-ride? and member? chosen-ride visited-attractions [
+;            ; Logic to handle repeating a ride
+;            set next-destination one-of attractions with [attraction-name = chosen-ride]
+;            let destination-queue-length length [queue] of next-destination
+;            let destination-virtual-queue-length length [virtual-queue] of next-destination
+;            visitor-create-path
+;            
+;            if isPriorityPassActive? and length priority-pass = 0 and destination-virtual-queue-length < destination-queue-length[
+;              visitor-check-virtual-queue ; futher checking of priority pass limit and patience level
+;              stop
+;            ]
+;            
+;            if length priority-pass != 0 [
+;              ifelse ticks + 15 >= item 1 priority-pass [ ; time to go to the booked attraction
+;                let priority-pass-attraction item 0 priority-pass 
+;                set next-destination one-of attractions with [attraction-name = priority-pass-attraction ]
+;                visitor-create-path
+;              ]
+;              [
+;                let queue-length length [queue] of next-destination
+;                let virtual-queue-length length [virtual-queue] of next-destination
+;                ifelse virtual-queue-length > 0 [
+;                  if queue-length * 4 < patience-level[ ; add weights for normal queue since express dequeue faster
+;                    let fillerRideTime 0
+;                    ask next-destination [
+;                      set fillerRideTime ticks + ((queue-length / (capacity * 0.20)) *  ride-length + 30) ; 30 for the longest path possible to a filler ride and to priority pass ride
+;                    ]
+;                    if fillerRideTime > item 1 priority-pass [ ; if the filler ride is going to make visitor be late for the booked ride then do not go.
+;                      stop
+;                    ]
+;                  ]
+;                ][
+;                  if queue-length < patience-level[
+;                    let fillerRideTime 0
+;                    ask next-destination [
+;                      set fillerRideTime ticks + ((queue-length / (capacity)) *  ride-length + 30) ; 30 for the longest path possible to a filler ride and to priority pass ride
+;                    ]
+;                    if fillerRideTime > item 1 priority-pass [ ; if the filler ride is going to make visitor be late for the booked ride then do not go.
+;                      stop
+;                    ]
+;                  ]   
+;                ] 
+;                
+;                ;                if queue-length < patience-level [
+;                ;                  let fillerRideTime 0
+;                ;                  ask next-destination [
+;                ;                    set fillerRideTime ticks + ((queue-length / (capacity * 0.20)) *  ride-length + 30) ; 30 for the longest path possible to a filler ride and to priority pass ride
+;                ;                  ]
+;                ;                  if fillerRideTime > item 1 priority-pass [ ; if the filler ride is going to make visitor be late for the booked ride then do not go.
+;                ;                    stop
+;                ;                  ]
+;                ;                ]
+;              ]
+;            ]
+;            
+;          ] [
+;            ; If not repeating or haven't visited this ride before, proceed normally
+;            ifelse not member? chosen-ride visited-attractions [
+;              set visited-attractions lput chosen-ride visited-attractions
+;              set next-destination one-of attractions with [attraction-name = chosen-ride]
+;              let destination-queue-length length [queue] of next-destination
+;              let destination-virtual-queue-length length [virtual-queue] of next-destination
+;              visitor-create-path
+;              
+;              if isPriorityPassActive? and length priority-pass = 0 and destination-virtual-queue-length < destination-queue-length[
+;                visitor-check-virtual-queue
+;                stop
+;              ]
+;              
+;              if length priority-pass != 0 [
+;                ifelse ticks + 15 >= item 1 priority-pass [
+;                  let priority-pass-attraction item 0 priority-pass
+;                  set next-destination one-of attractions with [attraction-name = priority-pass-attraction ]
+;                  visitor-create-path
+;                ]
+;                [
+;                let queue-length length [queue] of next-destination
+;                let virtual-queue-length length [virtual-queue] of next-destination
+;                ifelse virtual-queue-length > 0 [
+;                  if queue-length * 4 < patience-level[ ; add weights for normal queue since express dequeue faster
+;                    let fillerRideTime 0
+;                    ask next-destination [
+;                      set fillerRideTime ticks + ((queue-length / (capacity * 0.20)) *  ride-length + 30) ; 30 for the longest path possible to a filler ride and to priority pass ride
+;                    ]
+;                    if fillerRideTime > item 1 priority-pass [ ; if the filler ride is going to make visitor be late for the booked ride then do not go.
+;                      stop
+;                    ]
+;                  ]
+;                ][
+;                  if queue-length < patience-level[
+;                    let fillerRideTime 0
+;                    ask next-destination [
+;                      set fillerRideTime ticks + ((queue-length / (capacity)) *  ride-length + 30) ; 30 for the longest path possible to a filler ride and to priority pass ride
+;                    ]
+;                    if fillerRideTime > item 1 priority-pass [ ; if the filler ride is going to make visitor be late for the booked ride then do not go.
+;                      stop
+;                    ]
+;                  ]   
+;                ]
+;                ]
+;              ]
+;            ][          
+;              stop
+;            ]
+;          ]
+;          
+;        ] [
+;          ; If no activity is chosen, set destination to the entrance
+;          set next-destination one-of turtles with [label = "\nEntrance"]
+;          visitor-create-path
+;        ]
+;      ]
+;      ; activity chosen
+;      [
+;        ; Calculate distances for activities
+;        let activity-distances map [p -> distancexy first p last p] activities-positions
+;        
+;        ; Calculate initial probabilities (not yet normalized) based on distances
+;        let activity-probabilities n-values (length activity-distances) [i -> 1 - (item i activity-distances) / (max activity-distances)]
+;        
+;        ; Normalize these probabilities so they sum to 1
+;        let total-activity-probability sum activity-probabilities
+;        let normalized-activity-probabilities map [p -> p / total-activity-probability] activity-probabilities
+;        
+;        ; Correctly calculate cumulative probabilities
+;        let cumulative-activity-probabilities (list 0) ; Initialize with 0 to represent the starting point
+;        foreach normalized-activity-probabilities [
+;          p ->
+;          set cumulative-activity-probabilities lput (last cumulative-activity-probabilities + p) cumulative-activity-probabilities
+;        ]
+;        
+;        ; Generate a random threshold to choose an activity based on weighted probabilities
+;        let threshold random-float last cumulative-activity-probabilities
+;        let chosen-activity-index -1 ; Initialize to an invalid index
+;        
+;        ; Find the index where the threshold is less than the cumulative probability
+;        foreach n-values (length cumulative-activity-probabilities) [i -> i] [
+;          i ->
+;          if threshold < item i cumulative-activity-probabilities and chosen-activity-index = -1 [
+;            set chosen-activity-index i
+;          ]
+;        ]
+;        
+;        ; Adjust for the offset introduced by adding a 0 at the start of cumulative-ride-probabilities
+;        if chosen-activity-index > 0 [
+;          set chosen-activity-index chosen-activity-index - 1
+;        ]
+;        
+;        ifelse chosen-activity-index != FALSE and chosen-activity-index >= 0 and chosen-activity-index < length local-activities [
+;          let chosen-activity item chosen-activity-index local-activities
+;          let chosen-activity-position item chosen-activity-index activities-positions
+;          ifelse repeat-ride? and member? chosen-activity visited-attractions [
+;            ; Logic to handle repeating a ride
+;            set next-destination one-of attractions with [attraction-name = chosen-activity]
+;            let destination-queue-length length [queue] of next-destination
+;            let destination-virtual-queue-length length [virtual-queue] of next-destination
+;            visitor-create-path
+;            
+;            if isPriorityPassActive? and length priority-pass = 0 and destination-virtual-queue-length < destination-queue-length[
+;              visitor-check-virtual-queue
+;              stop
+;            ]
+;            
+;            if length priority-pass != 0 [
+;              ifelse ticks + 15 >= item 1 priority-pass [
+;                let priority-pass-attraction item 0 priority-pass
+;                set next-destination one-of attractions with [attraction-name = priority-pass-attraction ]
+;                visitor-create-path
+;              ]
+;              [
+;                let queue-length length [queue] of next-destination
+;                let virtual-queue-length length [virtual-queue] of next-destination
+;                ifelse virtual-queue-length > 0 [
+;                  if queue-length * 4 < patience-level[ ; add weights for normal queue since express dequeue faster
+;                    let fillerRideTime 0
+;                    ask next-destination [
+;                      set fillerRideTime ticks + ((queue-length / (capacity * 0.20)) *  ride-length + 30) ; 30 for the longest path possible to a filler ride and to priority pass ride
+;                    ]
+;                    if fillerRideTime > item 1 priority-pass [ ; if the filler ride is going to make visitor be late for the booked ride then do not go.
+;                      stop
+;                    ]
+;                  ]
+;                ][
+;                  if queue-length < patience-level[
+;                    let fillerRideTime 0
+;                    ask next-destination [
+;                      set fillerRideTime ticks + ((queue-length / (capacity)) *  ride-length + 30) ; 30 for the longest path possible to a filler ride and to priority pass ride
+;                    ]
+;                    if fillerRideTime > item 1 priority-pass [ ; if the filler ride is going to make visitor be late for the booked ride then do not go.
+;                      stop
+;                    ]
+;                  ]   
+;                ]
+;              ]
+;            ]
+;          ] [
+;            ; If not repeating or haven't visited this ride before, proceed normally
+;            ifelse not member? chosen-activity visited-attractions [
+;              if not isPriorityPassActive? [
+;                set visited-attractions lput chosen-activity visited-attractions
+;              ]
+;              set next-destination one-of attractions with [attraction-name = chosen-activity]
+;              let destination-queue-length length [queue] of next-destination
+;              let destination-virtual-queue-length length [virtual-queue] of next-destination
+;              visitor-create-path
+;              
+;              if isPriorityPassActive? and length priority-pass = 0 and destination-virtual-queue-length < destination-queue-length[
+;                visitor-check-virtual-queue
+;                stop
+;              ]
+;              
+;              if length priority-pass != 0 [
+;                ifelse ticks + 15 >= item 1 priority-pass [
+;                  let priority-pass-attraction item 0 priority-pass
+;                  set next-destination one-of attractions with [attraction-name = priority-pass-attraction ]
+;                  visitor-create-path
+;                ]
+;                [
+;                let queue-length length [queue] of next-destination
+;                let virtual-queue-length length [virtual-queue] of next-destination
+;                ifelse virtual-queue-length > 0 [
+;                  if queue-length * 4 < patience-level[ ; add weights for normal queue since express dequeue faster
+;                    let fillerRideTime 0
+;                    ask next-destination [
+;                      set fillerRideTime ticks + ((queue-length / (capacity * 0.20)) *  ride-length + 30) ; 30 for the longest path possible to a filler ride and to priority pass ride
+;                    ]
+;                    if fillerRideTime > item 1 priority-pass [ ; if the filler ride is going to make visitor be late for the booked ride then do not go.
+;                      stop
+;                    ]
+;                  ]
+;                ][
+;                  if queue-length < patience-level[
+;                    let fillerRideTime 0
+;                    ask next-destination [
+;                      set fillerRideTime ticks + ((queue-length / (capacity)) *  ride-length + 30) ; 30 for the longest path possible to a filler ride and to priority pass ride
+;                    ]
+;                    if fillerRideTime > item 1 priority-pass [ ; if the filler ride is going to make visitor be late for the booked ride then do not go.
+;                      stop
+;                    ]
+;                  ]   
+;                ]
+;                ]
+;              ]
+;            ][
+;              stop
+;            ]
+;          ]
+;          
+;        ] [
+;          ; If no activity is chosen, set destination to the entrance
+;          set next-destination one-of turtles with [label = "\nEntrance"]
+;          visitor-create-path
+;        ]
+;      ]
+;      ; At the end of the decision-making process, set the flag to true
+;      set decision-made? true
+;    ]
+;  ]
+;end
+;
+;
+;; Move towards the selected attraction
+;to visitor-move-to-attraction
+;  ; Check if the visitor has a destination
+;  ask visitors [
+;    ifelse isWaiting [
+;      ; If the visitor is waiting, no need to move
+;      ; The update-queues procedure will handle their progression
+;      
+;    ] [
+;      ; The visitor is not waiting and should move towards the next destination.
+;      if not empty? path [
+;        if not isMoving [
+;          set next-dest-name first path 
+;          let nd next-dest-name
+;          
+;          set current-location one-of attractions with [attraction-name = nd]
+;          if current-location = nobody [
+;            set current-location one-of entrances with [name = nd]
+;            if current-location = nobody [
+;              print (word "next-dest-name " next-dest-name " not found.")
+;            ]
+;          ]
+;          set isMoving true
+;        ]
+;        
+;        if current-location != nobody and isMoving [
+;          face current-location
+;          fd walking-speed 
+;          if distance current-location < walking-speed [ ; less than walking-speed else visitors might get stuck due to difference in walking speed and arrival sensitivity
+;            ; Check the queue and decide whether to join, decision-made? set back to false if queue is longer than visitor patience level
+;            ; The visitor has arrived at the destination.
+;            set current-location-name next-dest-name
+;            set path but-first path 
+;            
+;            if length path = 0 and [breed] of current-location = entrances[  
+;              set decision-made? false
+;              set go-home-counter go-home-counter + 1
+;              if go-home-counter > go-home-threshold [set going-home? true ]
+;            ]
+;            if [breed] of current-location = entrances and going-home? [
+;              die
+;            ]
+;            if length path = 0 and [breed] of current-location = attractions [
+;              if isPriorityPassActive? [
+;                set visited-attractions lput current-location visited-attractions
+;              ]
+;              visitor-check-queue
+;              set go-home-counter 0
+;            ]   
+;            
+;            set isMoving false
+;          ]
+;        ]
+;      ]
+;    ]
+;  ]
+;end
+;
+;to visitor-create-path 
+;  let currentname ""
+;  ifelse [breed] of current-location = attractions [
+;    ; Handle the case for attractions
+;    set currentname [attraction-name] of current-location  ; Use 'attraction-name' for attractions
+;  ] [
+;    ; Handle the case for entrances or any other breed
+;    if [breed] of current-location = entrances [
+;      set currentname [name] of current-location  ; Use 'name' for entrances
+;    ]
+;  ]
+;  let next-destination-name ""
+;  ifelse [breed] of next-destination = attractions [
+;    ; Handle the case for attractions
+;    set next-destination-name [attraction-name] of next-destination  ; Use 'attraction-name' for attractions
+;  ] [
+;    ; Handle the case for entrances or any other breed
+;    if [breed] of next-destination = entrances [
+;      set next-destination-name [name] of next-destination  ; Use 'name' for entrances
+;    ]
+;  ]
+;  set path find-path-bfs currentname next-destination-name
+;  
+;end
+;
+;; Check the queue of the attraction and decide whether to stay 
+;to visitor-check-queue
+;  
+;  let queue-length length [queue] of current-location
+;  let express-queue-length length [express-queue] of current-location
+;  let virtual-queue-length length [virtual-queue] of current-location
+;  
+;  let current-virtual-queue [virtual-queue] of current-location
+;  let virtual-visitor nobody
+;  
+;  ; Check and find the visitor in the virtual-queue
+;  if virtual-queue-length != 0 [
+;    let my-index position myself current-virtual-queue
+;    if my-index != false [
+;      ; If found, set virtual-visitor to myself
+;      set virtual-visitor myself
+;    ]
+;  ]
+;
+;  if queue-mode = "priority"[
+;    ifelse virtual-visitor != nobody[ ; transferring virtual-queue to express-queue
+;      ask current-location [
+;        let index position virtual-visitor virtual-queue
+;        if index != false [ ; Ensure the item was found in the list
+;          set virtual-queue remove-item index virtual-queue
+;        ]
+;        set virtual-waiting-count length virtual-queue
+;        set express-queue lput myself express-queue
+;        set express-waiting-count length express-queue
+;      ]
+;      set isWaiting true
+;    ] 
+;    [
+;      
+;      ask current-location [
+;        set queue lput myself queue
+;        set waiting-count length queue
+;      ]
+;      set isWaiting true
+;      
+;;      ifelse express-queue-length > 0 [
+;;        ifelse queue-length * 4 < patience-level[ ; add weights for normal queue since express dequeue faster
+;;          ask current-location [
+;;            set queue lput myself queue
+;;            set waiting-count length queue
+;;          ]
+;;        ]
+;;        [
+;;          set decision-made? false
+;;          stop
+;;        ]
+;;      ][
+;;        ifelse queue-length < patience-level[
+;;          ask current-location [
+;;            set queue lput myself queue
+;;            set waiting-count length queue
+;;          ]
+;;        ]   
+;;        [
+;;          set decision-made? false
+;;          stop
+;;        ]
+;;      ] 
+;;      set isWaiting true
+;    ]
+;  ]
+;  
+;  
+;  
+;  if queue-length < patience-level and queue-mode = "basic"[
+;    ; If queue is longer than patience level, decide not to join and make a new decision
+;    ; If queue is within patience level, join the queue
+;    
+;    
+;    ifelse queue-length < patience-level [
+;      ask current-location [
+;        set queue lput myself queue
+;        set waiting-count length queue
+;      ]
+;    ][
+;      set decision-made? false
+;      stop
+;    ]
+;    
+;    set isWaiting true
+;  ]
+;  
+;  
+;  
+;  if queue-mode = "express"[
+;    if isExpress? [
+;      ask current-location [
+;        set express-queue lput myself express-queue
+;        set express-waiting-count length express-queue
+;      ]
+;      set decision-made? false
+;      set isWaiting true
+;      stop
+;    ]
+;    ifelse express-queue-length > 0 [
+;      ifelse queue-length * 4 < patience-level[ ; add weights for normal queue since express dequeue faster
+;        ask current-location [
+;          set queue lput myself queue
+;          set waiting-count length queue
+;        ]
+;      ]
+;      [
+;        set decision-made? false
+;        stop
+;      ]
+;    ][
+;      ifelse queue-length < patience-level[
+;        ask current-location [
+;          set queue lput myself queue
+;          set waiting-count length queue
+;        ]
+;      ]   
+;      [
+;        set decision-made? false
+;        stop
+;      ]
+;    ] 
+;    set isWaiting true
+;  ]
+;
+;end
+;
+;; Check the virtual queue of the attraction for when priority pass is in use
+;to visitor-check-virtual-queue
+;  let virtual-queue-length length [virtual-queue] of next-destination
+;  ifelse priority-pass-limit > virtual-queue-length and virtual-queue-length < patience-level and length priority-pass = 0 [
+;    let returnTime 0
+;    ask next-destination [
+;      set virtual-queue lput myself virtual-queue
+;      set virtual-waiting-count length virtual-queue
+;      set returnTime ticks + ((virtual-queue-length / (capacity * 0.80)) *  ride-length ) ; calculating the return time virtual-queue occupies 80% of the ride capacity
+;    ]
+;    set priority-pass lput returnTime priority-pass
+;    set priority-pass fput [attraction-name] of next-destination priority-pass
+;  ] [
+;    set decision-made? false
+;    stop
+;  ] 
+;end
+;
+;; Update satisfaction based on experiences
+;to visitor-update-satisfaction
+;  ask visitors [
+;    ; Calculate the expected number of attractions by this time
+;    let expected-attractions-so-far (expected-attractions-rate / closing-time) * ticks
+;    ; Check if the visitor has met, exceeded, or not met this expected number
+;    ifelse length visited-attractions < expected-attractions-so-far [
+;      ; Decrease satisfaction if fewer attractions visited than expected
+;      set satisfaction-level satisfaction-level - satisfaction-modifier  ; Adjust the decrease
+;                                                                         ; Ensure satisfaction level does not go below 0
+;      if satisfaction-level < 0 [
+;        set satisfaction-level 0
+;      ]
+;    ] [
+;      if length visited-attractions > expected-attractions-so-far [
+;        ; Increase satisfaction if more attractions visited than expected
+;        set satisfaction-level satisfaction-level + satisfaction-modifier  ; Adjust the increase
+;                                                                           ; Ensure satisfaction level does not exceed 100
+;        if satisfaction-level > 100 [
+;          set satisfaction-level 100
+;        ]
+;      ]
+;      ; No change if the visitor has met the expected number exactly
+;    ]
+;  ]
+;end
+;
+;; update visitor's wait time counter
+;to visitor-update-wait-time
+;  ask visitors [
+;    if isWaiting = true [
+;      set waitTime waitTime + 1
+;    ]
+;  ]
+;end
+;
+;
+;
+;
+;
+;
+;
+;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

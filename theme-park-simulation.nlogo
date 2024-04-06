@@ -98,7 +98,7 @@ fanatic-prob
 fanatic-prob
 0
 100
-90.0
+15.0
 1
 1
 NIL
@@ -158,7 +158,7 @@ passive-prob
 passive-prob
 0
 100
-100.0
+15.0
 1
 1
 NIL
@@ -460,7 +460,6 @@ Lacking Physical Interactions: Add visitor types that arrive and decide in group
 Predictability of Visitor Arrivals Introduce Poisson distribution data for different days of the week, annual seasons, and notable calendar event days.
 
 Simple Attraction Popularity Effect: Add attraction tags and visitor preference tags (eg. wet, thrill, scenic, sky-high, branded, etc.) that can be matched and affected by the weather or time of day. Additionally, allow all attractions to have adjustable general popularity effects to emulate social media to a certain extent.
-
 @#$#@#$#@
 default
 true
