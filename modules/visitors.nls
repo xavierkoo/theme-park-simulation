@@ -130,10 +130,11 @@ to visitor-make-decisions
               ]
               [
                 let queue-length length [queue] of next-destination
-                if queue-length < patience-level [
+                let destination-capacity [capacity] of next-destination
+                if queue-length / destination-capacity * 0.25 < patience-level [
                   let fillerRideTime 0
                   ask next-destination [
-                    set fillerRideTime ticks + ((queue-length / (capacity * 0.80)) *  ride-length + 30) ; 30 for the longest path possible to a filler ride and to priority pass ride
+                    set fillerRideTime ticks + ((queue-length / (capacity * 0.25)) *  ride-length + 30) ; 30 for the longest path possible to a filler ride and to priority pass ride
                   ]
                   if fillerRideTime > item 1 priority-pass [
                     stop
@@ -164,10 +165,11 @@ to visitor-make-decisions
                 ]
                 [
                   let queue-length length [queue] of next-destination
-                  if queue-length < patience-level [
+                  let destination-capacity [capacity] of next-destination
+                  if queue-length / destination-capacity * 0.25 < patience-level [
                     let fillerRideTime 0
                     ask next-destination [
-                      set fillerRideTime ticks + ((queue-length / (capacity * 0.80)) *  ride-length + 30) ; 30 for the longest path possible to a filler ride and to priority pass ride
+                      set fillerRideTime ticks + ((queue-length / (capacity * 0.25)) *  ride-length + 30) ; 30 for the longest path possible to a filler ride and to priority pass ride
                     ]
                     if fillerRideTime > item 1 priority-pass [
                       stop
@@ -236,7 +238,6 @@ to visitor-make-decisions
               visitor-check-virtual-queue
               stop
             ]
-            
             if length priority-pass != 0 [
               ifelse ticks + 15 >= item 1 priority-pass [
                 let priority-pass-attraction item 0 priority-pass
@@ -245,10 +246,11 @@ to visitor-make-decisions
               ]
               [
                 let queue-length length [queue] of next-destination
-                if queue-length < patience-level [
+                let destination-capacity [capacity] of next-destination
+                if queue-length / destination-capacity * 0.25 < patience-level [
                   let fillerRideTime 0
                   ask next-destination [
-                    set fillerRideTime ticks + ((queue-length / (capacity * 0.80)) *  ride-length + 30) ; 30 for the longest path possible to a filler ride and to priority pass ride
+                    set fillerRideTime ticks + ((queue-length / (capacity * 0.25)) *  ride-length + 30) ; 30 for the longest path possible to a filler ride and to priority pass ride
                   ]
                   if fillerRideTime > item 1 priority-pass [
                     stop
@@ -272,6 +274,7 @@ to visitor-make-decisions
                 stop
               ]
               
+               
               if length priority-pass != 0 [
                 ifelse ticks + 15 >= item 1 priority-pass [
                   let priority-pass-attraction item 0 priority-pass
@@ -280,10 +283,11 @@ to visitor-make-decisions
                 ]
                 [
                   let queue-length length [queue] of next-destination
-                  if queue-length < patience-level [
+                  let destination-capacity [capacity] of next-destination
+                  if queue-length / destination-capacity * 0.25 < patience-level [
                     let fillerRideTime 0
                     ask next-destination [
-                      set fillerRideTime ticks + ((queue-length / (capacity * 0.80)) *  ride-length + 30) ; 30 for the longest path possible to a filler ride and to priority pass ride
+                      set fillerRideTime ticks + ((queue-length / (capacity * 0.25)) *  ride-length + 30) ; 30 for the longest path possible to a filler ride and to priority pass ride
                     ]
                     if fillerRideTime > item 1 priority-pass [
                       stop
