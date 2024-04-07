@@ -27,6 +27,9 @@ end
 
 ; Main simulation loop
 to go
+  if ticks = closing-time [ ;TO REMOVE
+    stop
+  ]
   spawning-visitors-now
   ask visitors [
     ifelse decision-made? [
@@ -207,7 +210,7 @@ PENS
 MONITOR
 205
 141
-352
+354
 186
 Current Visitor Count
 count visitors * 3
@@ -233,8 +236,8 @@ HORIZONTAL
 PLOT
 7
 350
-423
-571
+424
+569
 Average Satisfaction Levels by Archetype
 Time
 Sastisfaction Level
@@ -328,10 +331,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-617
-781
-789
-814
+618
+782
+791
+816
 priority-pass-limit
 priority-pass-limit
 0
@@ -366,10 +369,10 @@ PENS
 "Overall" 1.0 0 -16777216 true "" ""
 
 MONITOR
-990
-737
-1123
-782
+805
+785
+938
+830
 Unsatisfied Visitors
 visitors-left-early
 17
