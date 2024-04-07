@@ -27,9 +27,7 @@ end
 
 ; Main simulation loop
 to go
-  if ticks = closing-time [
-    stop
-  ]
+
   spawning-visitors-now
   ask visitors [
     ifelse decision-made? [
