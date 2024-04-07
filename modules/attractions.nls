@@ -47,8 +47,8 @@ end
 to attraction-create-rides
   let random-ride-time random 3
   let rides ["Thunderbolt" "Carousel" "Aqua" "Skyward" "Flight" "Glide" "Dash" "Voyage" "Tunnel"]
-  let positions [[-20 -3 true 10 10] [-20 20 true 10 10] [20 -3 true 7 8] [20 20 true 5 8] [-20 25 false 5 5]
-  [0 20 false 5 8] [0 25 false 4 8] [-28 10 false 5 10] [20 10 false 4 10]]
+  let positions [[-20 -3 true 12 10] [-20 20 true 12 10] [20 -3 true 9 8] [20 20 true 7 8] [-20 25 false 7 5]
+  [0 20 false 7 8] [0 25 false 6 8] [-28 10 false 7 10] [20 10 false 6 10]]
 
   (foreach rides positions [
     [r p] ->

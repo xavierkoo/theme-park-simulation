@@ -380,7 +380,7 @@ to visitor-move-to-attraction
             ]
             if length path = 0 and [breed] of current-location = attractions [
               if isPriorityPassActive? [
-                set visited-attractions lput current-location visited-attractions
+                set visited-attractions lput [attraction-name] of current-location visited-attractions
               ]
               visitor-check-queue
               set go-home-counter 0
