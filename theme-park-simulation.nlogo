@@ -27,7 +27,8 @@ end
 
 ; Main simulation loop
 to go
-  if ticks = closing-time [
+
+  if ticks = closing-time and stop-at-closing-time[
     stop
   ]
   spawning-visitors-now
@@ -185,10 +186,10 @@ NIL
 1
 
 PLOT
-8
-188
-422
-347
+433
+735
+847
+894
 Number of Park Visitors
 Time
 Visitors
@@ -208,21 +209,21 @@ PENS
 "Passive Sightseer" 1.0 0 -11221820 true "" "plot count visitors with [color = cyan] * 3"
 
 MONITOR
-205
-141
-354
-186
-Current Visitor Count
+318
+276
+418
+321
+Visitor Count
 count visitors * 3
 17
 1
 11
 
 SLIDER
-617
-739
-789
-772
+196
+237
+368
+270
 closing-time
 closing-time
 50
@@ -234,10 +235,10 @@ NIL
 HORIZONTAL
 
 PLOT
-7
-350
-424
-569
+6
+515
+423
+717
 Average Satisfaction Levels by Archetype
 Time
 Sastisfaction Level
@@ -257,10 +258,10 @@ PENS
 "Overall" 1.0 0 -16777216 true "" ""
 
 SLIDER
-426
-780
-601
-813
+11
+236
+186
+269
 satisfaction-modifier
 satisfaction-modifier
 0
@@ -272,10 +273,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-427
-738
-600
-771
+12
+194
+185
+227
 satisfaction-threshold
 satisfaction-threshold
 0
@@ -288,19 +289,19 @@ HORIZONTAL
 
 CHOOSER
 201
-10
-339
-55
+12
+372
+57
 queue-mode
 queue-mode
 "basic" "express" "priority"
 2
 
 PLOT
-6
-575
-423
-765
+5
+720
+422
+923
 Average Satisfaction Of Normal and Express Pass Holders
 Time
 Sastisfaction Level
@@ -316,10 +317,10 @@ PENS
 "Express" 1.0 0 -955883 true "" ""
 
 SLIDER
-800
-739
-972
-772
+197
+146
+369
+179
 express-prob
 express-prob
 0.1
@@ -331,28 +332,28 @@ NIL
 HORIZONTAL
 
 SLIDER
-618
-782
-791
-815
+200
+195
+373
+228
 priority-pass-limit
 priority-pass-limit
 50
 100
-50.0
+62.0
 1
 1
 NIL
 HORIZONTAL
 
 PLOT
-8
-767
-419
-1006
+7
+325
+418
+510
 Average Wait Time Per Attraction
 Time
-Time Spent In Queue
+Time In Queue
 0.0
 10.0
 0.0
@@ -369,15 +370,26 @@ PENS
 "Overall" 1.0 0 -16777216 true "" ""
 
 MONITOR
-805
-785
-938
-830
+194
+276
+313
+321
 Unsatisfied Visitors
 visitors-left-early
 17
 1
 11
+
+SWITCH
+15
+276
+185
+309
+stop-at-closing-time
+stop-at-closing-time
+0
+1
+-1000
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -399,6 +411,8 @@ queue-mode(chooser) - choose the basic, express and priority queue.
 passive-prob, leisure-prob, average-prob, enthu-prob and fanatic-prob(sliders) - the five archetypes mix. 
 
 closing-time(slider) - represents the opening hours of the theme park 250 tick = 9 hours
+
+stop-at-closing-time(switch) - stops the model at closing-time referenced from the closing time slider
 
 express-prob(slider) - when "express" is choosen in the queue-mode, represents the chance of a visitor owning an express pass.
 
@@ -449,6 +463,7 @@ priority-pass-limit(slider) - when "priority" is choosen in the queue-mode. The 
 
 satisfaction-threshold(slider) - the point where the visitors will leave the theme park if their satisfaction falls below the satisfaction-threshold.
 
+stop-at-closing-time(switch) - stops the model at closing-time referenced from the closing time slider
 
 ## EXTENDING THE MODEL
 
