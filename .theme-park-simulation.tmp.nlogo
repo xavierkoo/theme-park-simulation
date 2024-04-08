@@ -449,8 +449,8 @@ Pathways:
 Represented by links, visitors can only travel along them to explore.
 
 Attraction Labels:
-"Q" show the number of visitors in the standard queue, "E" show the number of visitors in the express queue and "V" show the number of visitors in the virtual queue (priority pass)
- 
+"Q" show the number of visitors in the standard queue, "E" show the number of visitors in the  queue
+
 ## THINGS TO TRY
 
 queue-mode(chooser) - choose the basic, express and priority queue. 
