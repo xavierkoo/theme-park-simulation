@@ -2,8 +2,11 @@
 
 ## WHAT IS IT?
 
-The model creates a simulation of an amusement park, focusing on the dynamics of visitor movement and queue management within such an environment. It will model various attractions with differing levels of popularity and simulate the behaviours of varying archetypes of visitors. The simulation will incorporate different queueing strategies, including systems such as virtual or privileged express queues, to analyse and optimise the flow of visitors. By integrating these elements, the simulation seeks to provide insights into queue management, enhance visitor experience, and improve operational efficiency within amusement parks.
+This model creates an amusement park simulation using Netlogo, focusing on the dynamics of visitor movement and queue management within such an environment. It will model various attractions with differing levels of popularity and simulate the behaviours of varying archetypes of visitors. The simulation will incorporate different queueing strategies, including systems such as virtual or privileged express queues, to analyse and optimise the flow of visitors. By integrating these elements, the simulation seeks to provide insights into queue management, enhance visitor experience, and improve operational efficiency within amusement parks.
 
+<img width="684" alt="Screenshot 2024-04-29 at 11 25 17 PM" src="https://github.com/xavierkoo/theme-park-simulation/assets/86020207/918ce23e-cbbc-432e-8141-1221377b2d58">
+
+Read more about this project here
 
 ## HOW IT WORKS
 
