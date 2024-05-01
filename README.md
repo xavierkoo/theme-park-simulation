@@ -6,7 +6,7 @@ This model creates an amusement park simulation using Netlogo, focusing on the d
 
 <img width="684" alt="Screenshot 2024-04-29 at 11 25 17 PM" src="https://github.com/xavierkoo/theme-park-simulation/assets/86020207/918ce23e-cbbc-432e-8141-1221377b2d58">
 
-Read more about this project here
+Read more about this project [here](https://medium.com/@xavier2812/an-agent-based-simulation-approach-to-queue-management-in-theme-parks-abba87957697)
 
 ## HOW IT WORKS
 
